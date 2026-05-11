@@ -30,18 +30,8 @@
                     <form action="{{ route('reports.export-daily') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="daily_device_id" class="form-label">Pilih Ruangan/Device</label>
-                            <select class="form-select @error('device_id') is-invalid @enderror" id="daily_device_id" name="device_id" required>
-                                <option value="">-- Pilih Device --</option>
-                                @foreach($devices as $device)
-                                    <option value="{{ $device->id }}">{{ $device->device_name }} ({{ $device->location }})</option>
-                                @endforeach
-                            </select>
-                            @error('device_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <!-- Hidden device_id since only 1 room exists -->
+                        <input type="hidden" name="device_id" value="{{ $devices->first()->id ?? '' }}">
 
                         <div class="mb-3">
                             <label for="daily_date" class="form-label">Pilih Tanggal</label>
@@ -91,18 +81,8 @@
                     <form action="{{ route('reports.export-weekly') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="weekly_device_id" class="form-label">Pilih Ruangan/Device</label>
-                            <select class="form-select @error('device_id') is-invalid @enderror" id="weekly_device_id" name="device_id" required>
-                                <option value="">-- Pilih Device --</option>
-                                @foreach($devices as $device)
-                                    <option value="{{ $device->id }}">{{ $device->device_name }} ({{ $device->location }})</option>
-                                @endforeach
-                            </select>
-                            @error('device_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <!-- Hidden device_id since only 1 room exists -->
+                        <input type="hidden" name="device_id" value="{{ $devices->first()->id ?? '' }}">
 
                         <div class="mb-3">
                             <label for="weekly_start_date" class="form-label">Pilih Hari Pertama Minggu</label>
@@ -154,18 +134,8 @@
                     <form action="{{ route('reports.export-monthly') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="monthly_device_id" class="form-label">Pilih Ruangan/Device</label>
-                            <select class="form-select @error('device_id') is-invalid @enderror" id="monthly_device_id" name="device_id" required>
-                                <option value="">-- Pilih Device --</option>
-                                @foreach($devices as $device)
-                                    <option value="{{ $device->id }}">{{ $device->device_name }} ({{ $device->location }})</option>
-                                @endforeach
-                            </select>
-                            @error('device_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <!-- Hidden device_id since only 1 room exists -->
+                        <input type="hidden" name="device_id" value="{{ $devices->first()->id ?? '' }}">
 
                         <div class="mb-3">
                             <label for="monthly_month" class="form-label">Pilih Bulan & Tahun</label>

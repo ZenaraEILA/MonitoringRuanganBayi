@@ -16,7 +16,7 @@ class MonitoringController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'device_id' => 'required|string|exists:devices,device_id',
+            'device_id' => 'required|string',
             'temperature' => 'required|numeric|between:-50,60',
             'humidity' => 'required|numeric|between:0,100',
         ]);
@@ -25,14 +25,18 @@ class MonitoringController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $device = Device::where('device_id', $request->device_id)->first();
+        // Otomatis buat device baru jika ID belum terdaftar
+        $device = Device::firstOrCreate(
+            ['device_id' => $request->device_id],
+            [
+                'device_name' => 'Ruangan ' . substr($request->device_id, -4),
+                'location' => 'Lokasi Baru',
+            ]
+        );
 
-        // Determine status based on temperature and humidity
+        // Determine status based on temperature (align with Arduino)
         $status = 'Aman';
-        if ($request->temperature < 15 || $request->temperature > 30) {
-            $status = 'Tidak Aman';
-        }
-        if ($request->humidity < 35 || $request->humidity > 60) {
+        if ($request->temperature <= 29 || $request->temperature >= 31) {
             $status = 'Tidak Aman';
         }
 
@@ -105,9 +109,12 @@ class MonitoringController extends Controller
                 $minutesAgo = round($secondsAgo / 60, 2);
                 
                 // Device terhubung jika data masuk dalam 30 detik
-                // Arduino kirim tiap 10 detik, jadi 30 detik = toleransi 3x miss
                 $isConnected = $secondsAgo <= 30;
             }
+
+            // Check emergency condition
+            $isEmergency = Monitoring::checkEmergencyCondition($device->id);
+            $emergencyDetail = $isEmergency ? Monitoring::getLatestUnsafeDetails($device->id) : null;
 
             $data[] = [
                 'id' => $device->id,
@@ -121,6 +128,14 @@ class MonitoringController extends Controller
                 'temperature' => $latestMonitoring ? $latestMonitoring->temperature : null,
                 'humidity' => $latestMonitoring ? $latestMonitoring->humidity : null,
                 'status' => $latestMonitoring ? $latestMonitoring->status : null,
+                'recommendations' => $latestMonitoring ? $latestMonitoring->recommendation_list : [],
+                'is_emergency' => $isEmergency,
+                'emergency_detail' => $emergencyDetail ? [
+                    'temperature' => $emergencyDetail->temperature,
+                    'humidity' => $emergencyDetail->humidity,
+                    'recorded_at' => $emergencyDetail->recorded_at->toIso8601String(),
+                    'diff_for_humans' => $emergencyDetail->recorded_at->diffForHumans()
+                ] : null,
             ];
         }
 
@@ -320,7 +335,10 @@ class MonitoringController extends Controller
 
             $tempStatus = 'safe';  // hijau
             if ($latestMonitoring) {
-                if ($latestMonitoring->temperature >= 30) {
+                if ($latestMonitoring->temperature <= 29) {
+                    $tempStatus = 'warning'; // kuning (terlalu dingin)
+                }
+                if ($latestMonitoring->temperature >= 31) {
                     $tempStatus = 'warning'; // kuning
                 }
                 if ($latestMonitoring->temperature > 35) {

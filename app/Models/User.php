@@ -173,8 +173,8 @@ class User extends Authenticatable
      */
     public function updateRole(string $newRole): bool
     {
-        if (!in_array($newRole, ['admin', 'petugas'])) {
-            throw new \InvalidArgumentException("Role '{$newRole}' tidak valid. Hanya 'admin' atau 'petugas'.");
+        if (!in_array($newRole, ['admin', 'petugas', 'public'])) {
+            throw new \InvalidArgumentException("Role '{$newRole}' tidak valid. Hanya 'admin', 'petugas', atau 'public'.");
         }
 
         if ($this->role === $newRole) {
@@ -228,6 +228,7 @@ class User extends Authenticatable
         return match($this->role) {
             'admin' => 'Admin',
             'petugas' => 'Petugas',
+            'public' => 'Publik',
             default => 'Unknown',
         };
     }

@@ -24,17 +24,8 @@
     </div>
     <div class="card-body p-4">
         <form method="GET" action="{{ route('monitoring.history') }}" class="row g-3">
-            <div class="col-md-3">
-                <label for="device_id" class="form-label">Device</label>
-                <select name="device_id" id="device_id" class="form-select">
-                    <option value="">-- Semua Device --</option>
-                    @foreach($devices as $device)
-                        <option value="{{ $device->id }}" {{ $selectedDevice == $device->id ? 'selected' : '' }}>
-                            {{ $device->device_name }} ({{ $device->location }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <!-- Hidden device_id since only 1 room exists -->
+            <input type="hidden" name="device_id" value="{{ $selectedDevice }}">
             <div class="col-md-2">
                 <label for="start_date" class="form-label">Tanggal Mulai</label>
                 <input type="date" name="start_date" id="start_date" class="form-control" value="{{ $startDate }}">
@@ -70,8 +61,6 @@
         <table class="table table-hover mb-0 table-sm">
             <thead>
                 <tr>
-                    <th>Device</th>
-                    <th>Lokasi</th>
                     <th>Suhu (°C)</th>
                     <th>Kelembapan (%)</th>
                     <th>Status</th>
@@ -84,10 +73,8 @@
             <tbody>
                 @forelse($monitorings as $monitoring)
                 <tr class="{{ $monitoring->status === 'Tidak Aman' ? 'table-danger' : '' }}">
-                    <td><strong>{{ $monitoring->device->device_name }}</strong></td>
-                    <td>{{ $monitoring->device->location }}</td>
                     <td>
-                        <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $monitoring->temperature < 15 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $monitoring->temperature < 15 || $monitoring->temperature > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $monitoring->temperature < 15 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
+                        <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
                             {{ number_format($monitoring->temperature, 2) }}
                         </span>
                     </td>
@@ -97,7 +84,7 @@
                         </span>
                     </td>
                     <td>
-                        <span class="badge {{ $monitoring->status === 'Aman' ? 'badge-aman' : 'badge-tidak-aman' }}">
+                        <span class="badge {{ $monitoring->status === 'Aman' ? 'bg-success' : 'bg-danger' }}">
                             {{ $monitoring->status }}
                         </span>
                     </td>
@@ -121,7 +108,7 @@
                         @else
                             <small class="text-secondary">-</small>
                         @endif
-                        @if($monitoring->status === 'Tidak Aman')
+                        @if($monitoring->status === 'Tidak Aman' && auth()->user()->role !== 'public')
                             <button class="btn btn-xs btn-warning" data-bs-toggle="modal" data-bs-target="#actionModal{{ $monitoring->id }}">
                                 <i class="fas fa-edit"></i>
                             </button>

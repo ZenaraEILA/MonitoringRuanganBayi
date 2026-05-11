@@ -49,7 +49,7 @@
                 <td>
                     @if($device->monitorings->count() > 0)
                         @php $monitoring = $device->monitorings->first(); @endphp
-                        <span class="badge {{ $monitoring->status === 'Aman' ? 'badge-success' : 'badge-danger' }}">
+                        <span class="badge {{ $monitoring->status === 'Aman' ? 'bg-success' : 'bg-danger' }}">
                             {{ $monitoring->status }}
                         </span>
                     @else

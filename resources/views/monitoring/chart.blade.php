@@ -17,16 +17,8 @@
     </div>
     <div class="card-body">
         <form method="GET" action="{{ route('monitoring.chart') }}" class="row g-3">
-            <div class="col-md-6">
-                <label for="device_id" class="form-label">Ruangan/Device</label>
-                <select name="device_id" id="device_id" class="form-select">
-                    @foreach($devices as $device)
-                        <option value="{{ $device->id }}" {{ $selectedDevice == $device->id ? 'selected' : '' }}>
-                            {{ $device->device_name }} ({{ $device->location }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <!-- Hidden device_id since only 1 room exists -->
+            <input type="hidden" name="device_id" value="{{ $selectedDevice }}">
             <div class="col-md-4">
                 <label for="timeframe" class="form-label">Rentang Waktu</label>
                 <select name="timeframe" id="timeframe" class="form-select">
@@ -117,7 +109,7 @@
         <div class="card-body">
             <div class="alert alert-warning mb-3">
                 <i class="fas fa-exclamation-circle"></i> <strong>Tidak Ada Data</strong><br>
-                Tidak ditemukan data monitoring untuk device <strong>{{ $selectedDevice }}</strong> dalam rentang <strong>{{ $timeframeLabels[$timeframe] ?? $timeframe }}</strong>.
+                Tidak ditemukan data monitoring dalam rentang <strong>{{ $timeframeLabels[$timeframe] ?? $timeframe }}</strong>.
             </div>
             <div class="alert alert-info">
                 <strong>💡 Saran:</strong> 

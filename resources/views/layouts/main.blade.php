@@ -1046,8 +1046,9 @@
                             <i class="fas fa-chart-line"></i> Dashboard
                         </a>
                     </li>
+                    @if(auth()->user()->role !== 'public')
                     <li class="nav-item d-md-none">
-                        <a class="nav-link {{ request()->routeIs('monitoring*') ? 'active' : '' }}" href="{{ route('monitoring.history') }}">
+                        <a class="nav-link {{ request()->routeIs('monitoring.history') ? 'active' : '' }}" href="{{ route('monitoring.history') }}">
                             <i class="fas fa-history"></i> Riwayat
                         </a>
                     </li>
@@ -1058,7 +1059,7 @@
                     </li>
                     <li class="nav-item d-md-none">
                         <a class="nav-link {{ request()->routeIs('monitoring.hourly-trend') ? 'active' : '' }}" href="{{ route('monitoring.hourly-trend') }}">
-                            <i class="fas fa-chart-simple"></i> Tren Harian
+                            <i class="fas fa-chart-simple"></i> Data Harian
                         </a>
                     </li>
                     <li class="nav-item d-md-none">
@@ -1066,19 +1067,21 @@
                             <i class="fas fa-question-circle"></i> Bantuan & Panduan
                         </a>
                     </li>
+                    @endif
                     @if(auth()->user()->role === 'admin')
+                    <li class="nav-item d-md-none border-top mt-2 pt-2">
+                        <span class="nav-link disabled text-muted small fw-bold text-uppercase">Admin Panel</span>
+                    </li>
+                    <li class="nav-item d-md-none">
+                        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                            <i class="fas fa-users-cog"></i> Manajemen User
+                        </a>
+                    </li>
                     <li class="nav-item d-md-none border-bottom mb-2 pb-2">
                         <a class="nav-link {{ request()->routeIs('device*') ? 'active' : '' }}" href="{{ route('device.index') }}">
                             <i class="fas fa-microchip"></i> Manajemen Device
                         </a>
                     </li>
-                    <li class="nav-item d-md-none border-bottom mb-2 pb-2">
-                        <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-                            <i class="fas fa-users-cog"></i> Manajemen User
-                        </a>
-                    </li>
-                    @else
-                    <li class="nav-item d-md-none border-bottom mb-2 pb-2"></li>
                     @endif
                     @endauth
 
@@ -1100,13 +1103,6 @@
                         <div class="dropdown-menu dropdown-menu-end status-monitoring-dropdown" 
                              aria-labelledby="statusMonitoring">
                             
-                            <!-- Device Selector - DYNAMIC -->
-                            <div class="device-selector-group">
-                                <label class="device-selector-label">Device:</label>
-                                <select id="deviceSelector" class="device-selector-dropdown">
-                                    <option value="">Loading devices...</option>
-                                </select>
-                            </div>
 
                             <div class="dropdown-header">Live Indicators</div>
 
@@ -1162,11 +1158,16 @@
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle"></i> {{ auth()->user()->name }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="fas fa-cog"></i> Profil</a></li>
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-edit"></i> Edit Profil</a></li>
-                            <li><a class="dropdown-item" href="{{ route('profile.edit-password') }}"><i class="fas fa-key"></i> Ganti Password</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                            @if(auth()->user()->role === 'admin')
+                            <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="fas fa-user-cog me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-edit me-2"></i> Edit Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.edit-password') }}"><i class="fas fa-key me-2"></i> Ganti Password</a></li>
                             <li><hr class="dropdown-divider"></li>
+                            @elseif(auth()->user()->role === 'petugas')
+                            <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="fas fa-user-cog me-2"></i> Profil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            @endif
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -1197,8 +1198,9 @@
                                 <i class="fas fa-chart-line"></i> Dashboard
                             </a>
                         </li>
+                        @if(auth()->user()->role !== 'public')
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('monitoring*') ? 'active' : '' }}" href="{{ route('monitoring.history') }}">
+                            <a class="nav-link {{ request()->routeIs('monitoring.history') ? 'active' : '' }}" href="{{ route('monitoring.history') }}">
                                 <i class="fas fa-history"></i> Riwayat
                             </a>
                         </li>
@@ -1209,7 +1211,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('monitoring.hourly-trend') ? 'active' : '' }}" href="{{ route('monitoring.hourly-trend') }}">
-                                <i class="fas fa-chart-simple"></i> Tren Harian
+                                <i class="fas fa-chart-simple"></i> Data Harian
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">
+                                <i class="fas fa-file-pdf"></i> Export PDF
                             </a>
                         </li>
                         <li class="nav-item">
@@ -1217,15 +1224,19 @@
                                 <i class="fas fa-question-circle"></i> Bantuan & Panduan
                             </a>
                         </li>
+                        @endif
                         @if(auth()->user()->role === 'admin')
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('device*') ? 'active' : '' }}" href="{{ route('device.index') }}">
-                                <i class="fas fa-microchip"></i> Manajemen Device
-                            </a>
+                        <li class="nav-item mt-3 mb-2 px-3">
+                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">Admin Panel</span>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                                 <i class="fas fa-users-cog"></i> Manajemen User
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('device*') ? 'active' : '' }}" href="{{ route('device.index') }}">
+                                <i class="fas fa-microchip"></i> Manajemen Device
                             </a>
                         </li>
                         @endif
@@ -1371,17 +1382,22 @@
                     const data = await response.json();
                     
                     if (data.success && data.data && data.data.length > 0) {
-                        // Clear existing options except the first one
-                        this.deviceSelector.innerHTML = '';
+                        // Populate dropdown if it exists
+                        if (this.deviceSelector) {
+                            this.deviceSelector.innerHTML = '';
+                            data.data.forEach(device => {
+                                const option = document.createElement('option');
+                                option.value = device.id;
+                                option.textContent = device.device_name;
+                                option.dataset.location = device.location;
+                                this.deviceSelector.appendChild(option);
+                            });
+                        }
                         
-                        // Populate dropdown dengan devices dari API
-                        data.data.forEach(device => {
-                            const option = document.createElement('option');
-                            option.value = device.id;
-                            option.textContent = device.device_name;
-                            option.dataset.location = device.location;
-                            this.deviceSelector.appendChild(option);
-                        });
+                        // Always set the first device as selected if none is set
+                        if (!this.selectedDeviceId) {
+                            this.selectedDeviceId = data.data[0].id;
+                        }
                         
                         console.log(`✅ Loaded ${data.data.length} devices from API`);
                     } else {
@@ -1407,8 +1423,7 @@
             elementsCached() {
                 return this.tempIndicator && this.tempValue && 
                        this.humidityIndicator && this.humidityValue &&
-                       this.espIndicator && this.espStatus &&
-                       this.deviceSelector;
+                       this.espIndicator && this.espStatus;
             },
 
             fetchData() {

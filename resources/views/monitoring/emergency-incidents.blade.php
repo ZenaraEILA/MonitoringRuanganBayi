@@ -20,17 +20,8 @@
 <div class="card mb-4">
     <div class="card-body">
         <form action="{{ route('monitoring.emergency-incidents') }}" method="get" class="row g-3">
-            <div class="col-md-4">
-                <label for="device_id" class="form-label">Pilih Ruangan</label>
-                <select name="device_id" id="device_id" class="form-select">
-                    <option value="">Semua Ruangan</option>
-                    @foreach($devices as $device)
-                        <option value="{{ $device->id }}" {{ $device->id == $selectedDevice ? 'selected' : '' }}>
-                            {{ $device->device_name }} - {{ $device->location }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <!-- Hidden device_id since only 1 room exists -->
+            <input type="hidden" name="device_id" value="{{ $selectedDevice }}">
             <div class="col-md-4">
                 <label for="start_date" class="form-label">Tanggal Mulai</label>
                 <input type="date" name="start_date" id="start_date" class="form-control" value="{{ $startDate }}">
@@ -77,8 +68,6 @@
         <table class="table table-hover mb-0">
             <thead class="table-danger">
                 <tr>
-                    <th>Ruangan</th>
-                    <th>Lokasi</th>
                     <th>Waktu Kejadian</th>
                     <th>Suhu (°C)</th>
                     <th>Kelembapan (%)</th>
@@ -89,10 +78,6 @@
             <tbody>
                 @forelse($emergencies as $emergency)
                 <tr class="table-danger">
-                    <td>
-                        <strong>{{ $emergency->device->device_name }}</strong>
-                    </td>
-                    <td>{{ $emergency->device->location }}</td>
                     <td>
                         {{ $emergency->recorded_at->format('d-m-Y H:i:s') }}<br>
                         <small class="text-muted">{{ $emergency->recorded_at->diffForHumans() }}</small>

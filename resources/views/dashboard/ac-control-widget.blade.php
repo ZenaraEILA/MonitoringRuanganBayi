@@ -58,7 +58,7 @@
                 'message' => '🌡️ Suhu tinggi! Klik untuk turunkan AC',
                 'action' => 'decrease'
             ];
-        } elseif ($currentTemp < 15) {
+        } elseif ($currentTemp < 28) {
             $recommendation = [
                 'type' => 'info',
                 'icon' => 'fa-snowflake',

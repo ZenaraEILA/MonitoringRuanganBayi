@@ -91,9 +91,9 @@ class Device extends Model
     public function getStabilityBadgeClass(): string
     {
         return match ($this->stability_status) {
-            'stable' => 'badge-success',
-            'unstable' => 'badge-warning',
-            default => 'badge-secondary',
+            'stable' => 'bg-success',
+            'unstable' => 'bg-warning text-dark',
+            default => 'bg-secondary',
         };
     }
 

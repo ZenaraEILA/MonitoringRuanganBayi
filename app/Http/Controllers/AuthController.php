@@ -93,6 +93,34 @@ class AuthController extends Controller
     }
 
     /**
+     * Handle public/guest login.
+     */
+    public function publicLogin(Request $request)
+    {
+        $user = User::where('role', 'public')->first() ?? User::where('username', 'publik')->first();
+
+        if (!$user) {
+            return back()->with('error', 'Akses publik belum tersedia.');
+        }
+
+        if (!$user->isActive()) {
+            return back()->with('error', 'Akses publik sedang dinonaktifkan.');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        // Record login log
+        LoginLog::create([
+            'user_id' => $user->id,
+            'login_time' => now(),
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Selamat datang di Dashboard Publik.');
+    }
+
+    /**
      * Handle logout.
      */
     public function logout(Request $request)

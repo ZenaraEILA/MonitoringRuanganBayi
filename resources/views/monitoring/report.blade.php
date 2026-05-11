@@ -21,17 +21,7 @@
                 <p class="text-muted">Download data monitoring untuk satu hari</p>
                 <form action="{{ route('reports.export-daily') }}" method="post">
                     @csrf
-                    <div class="mb-3">
-                        <label for="device_id_daily" class="form-label">Pilih Ruangan</label>
-                        <select name="device_id" id="device_id_daily" class="form-select" required>
-                            <option value="">-- Pilih Ruangan --</option>
-                            @foreach($devices as $device)
-                                <option value="{{ $device->id }}">
-                                    {{ $device->device_name }} - {{ $device->location }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <input type="hidden" name="device_id" value="{{ $devices->first()->id ?? '' }}">
                     <div class="mb-3">
                         <label for="date_daily" class="form-label">Pilih Tanggal</label>
                         <input type="date" name="date" id="date_daily" class="form-control" value="{{ now()->format('Y-m-d') }}" required>
@@ -61,17 +51,7 @@
                 <p class="text-muted">Download data monitoring untuk 7 hari</p>
                 <form action="{{ route('reports.export-weekly') }}" method="post">
                     @csrf
-                    <div class="mb-3">
-                        <label for="device_id_weekly" class="form-label">Pilih Ruangan</label>
-                        <select name="device_id" id="device_id_weekly" class="form-select" required>
-                            <option value="">-- Pilih Ruangan --</option>
-                            @foreach($devices as $device)
-                                <option value="{{ $device->id }}">
-                                    {{ $device->device_name }} - {{ $device->location }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <input type="hidden" name="device_id" value="{{ $devices->first()->id ?? '' }}">
                     <div class="mb-3">
                         <label for="start_date_weekly" class="form-label">Tanggal Mulai (Senin)</label>
                         <input type="date" name="start_date" id="start_date_weekly" class="form-control" value="{{ now()->startOfWeek()->format('Y-m-d') }}" required>
@@ -101,17 +81,7 @@
                 <p class="text-muted">Download data monitoring untuk satu bulan</p>
                 <form action="{{ route('reports.export-monthly') }}" method="post">
                     @csrf
-                    <div class="mb-3">
-                        <label for="device_id_monthly" class="form-label">Pilih Ruangan</label>
-                        <select name="device_id" id="device_id_monthly" class="form-select" required>
-                            <option value="">-- Pilih Ruangan --</option>
-                            @foreach($devices as $device)
-                                <option value="{{ $device->id }}">
-                                    {{ $device->device_name }} - {{ $device->location }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <input type="hidden" name="device_id" value="{{ $devices->first()->id ?? '' }}">
                     <div class="mb-3">
                         <label for="month_monthly" class="form-label">Pilih Bulan</label>
                         <input type="month" name="month" id="month_monthly" class="form-control" value="{{ now()->format('Y-m') }}" required>

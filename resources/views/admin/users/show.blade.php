@@ -112,9 +112,13 @@ GET /admin/users/{id}
                                 <span class="badge bg-danger">
                                     <i class="fas fa-crown"></i> Admin
                                 </span>
-                            @else
+                            @elseif($user->role === 'petugas')
                                 <span class="badge bg-secondary">
                                     <i class="fas fa-user"></i> Petugas
+                                </span>
+                            @else
+                                <span class="badge bg-info">
+                                    <i class="fas fa-eye"></i> Publik
                                 </span>
                             @endif
                         </div>
@@ -223,9 +227,13 @@ GET /admin/users/{id}
                                         <span class="badge bg-danger">
                                             <i class="fas fa-crown"></i> Admin
                                         </span>
-                                    @else
+                                    @elseif($user->role === 'petugas')
                                         <span class="badge bg-secondary">
                                             <i class="fas fa-user"></i> Petugas
+                                        </span>
+                                    @else
+                                        <span class="badge bg-info">
+                                            <i class="fas fa-eye"></i> Publik
                                         </span>
                                     @endif
                                 </div>
@@ -238,10 +246,13 @@ GET /admin/users/{id}
                                 <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
                                     <option value="">-- Pilih Role Baru --</option>
                                     <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>
-                                        <i class="fas fa-crown"></i> Admin
+                                        Admin
                                     </option>
                                     <option value="petugas" {{ $user->role === 'petugas' ? 'selected' : '' }}>
-                                        <i class="fas fa-user"></i> Petugas
+                                        Petugas
+                                    </option>
+                                    <option value="public" {{ $user->role === 'public' ? 'selected' : '' }}>
+                                        Publik (Hanya Lihat)
                                     </option>
                                 </select>
                                 @error('role')

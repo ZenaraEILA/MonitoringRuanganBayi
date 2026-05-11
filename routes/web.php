@@ -23,6 +23,7 @@ use App\Http\Controllers\HelpController;
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/login/public', [AuthController::class, 'publicLogin'])->name('login.public');
 
 /**
  * Protected Routes
@@ -33,11 +34,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     // Help & Guide
-    Route::get('/help', [HelpController::class, 'index'])->name('help.index');
-    Route::get('/help/{section}', [HelpController::class, 'section'])->name('help.section');
+    Route::get('/help', [HelpController::class, 'index'])->name('help.index')->middleware('staff');
+    Route::get('/help/{section}', [HelpController::class, 'section'])->name('help.section')->middleware('staff');
 
     // Profile Management
-    Route::prefix('profile')->group(function () {
+    Route::prefix('profile')->middleware('staff')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
         Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
@@ -48,16 +49,16 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Monitoring
-    Route::prefix('monitoring')->group(function () {
+    Route::prefix('monitoring')->middleware('staff')->group(function () {
         Route::get('/history', [MonitoringController::class, 'history'])->name('monitoring.history');
         Route::get('/chart', [MonitoringController::class, 'chart'])->name('monitoring.chart');
         Route::get('/hourly-trend', [MonitoringController::class, 'hourlyTrend'])->name('monitoring.hourly-trend');
-        Route::post('/{id}/action', [MonitoringController::class, 'updateAction'])->name('monitoring.update-action');
+        Route::post('/{id}/action', [MonitoringController::class, 'updateAction'])->name('monitoring.update-action')->middleware('staff');
         Route::get('/emergency-incidents', [MonitoringController::class, 'emergencyIncidents'])->name('monitoring.emergency-incidents');
     });
 
     // Reports
-    Route::prefix('reports')->group(function () {
+    Route::prefix('reports')->middleware('staff')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('reports.index');
         Route::post('/export-daily', [ReportController::class, 'exportDaily'])->name('reports.export-daily');
         Route::post('/export-weekly', [ReportController::class, 'exportWeekly'])->name('reports.export-weekly');
@@ -71,16 +72,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Incident Markers
     Route::prefix('incident-marker')->group(function () {
-        Route::post('/', [IncidentMarkerController::class, 'store'])->name('incident-marker.store');
+        Route::post('/', [IncidentMarkerController::class, 'store'])->name('incident-marker.store')->middleware('staff');
         Route::get('/monitoring/{monitoring}', [IncidentMarkerController::class, 'getMarkers'])->name('incident-marker.get');
-        Route::delete('/{marker}', [IncidentMarkerController::class, 'destroy'])->name('incident-marker.destroy');
+        Route::delete('/{marker}', [IncidentMarkerController::class, 'destroy'])->name('incident-marker.destroy')->middleware('staff');
         Route::get('/device/{device}/chart', [IncidentMarkerController::class, 'getChartWithMarkers'])->name('incident-marker.chart');
     });
 
     // Daily Checklists
     Route::prefix('checklist')->group(function () {
         Route::get('/device/{device}/today', [ChecklistController::class, 'showToday'])->name('checklist.today');
-        Route::put('/{checklist}', [ChecklistController::class, 'update'])->name('checklist.update');
+        Route::put('/{checklist}', [ChecklistController::class, 'update'])->name('checklist.update')->middleware('staff');
         Route::get('/device/{device}/history', [ChecklistController::class, 'history'])->name('checklist.history');
         Route::get('/device/{device}/status', [ChecklistController::class, 'checkTodayStatus'])->name('checklist.status');
     });
@@ -88,9 +89,9 @@ Route::middleware(['auth'])->group(function () {
     // Doctor Notes
     Route::prefix('doctor-note')->group(function () {
         Route::get('/device/{device}', [DoctorNoteController::class, 'index'])->name('doctor-note.index');
-        Route::post('/', [DoctorNoteController::class, 'store'])->name('doctor-note.store');
-        Route::put('/{note}', [DoctorNoteController::class, 'update'])->name('doctor-note.update');
-        Route::delete('/{note}', [DoctorNoteController::class, 'destroy'])->name('doctor-note.destroy');
+        Route::post('/', [DoctorNoteController::class, 'store'])->name('doctor-note.store')->middleware('staff');
+        Route::put('/{note}', [DoctorNoteController::class, 'update'])->name('doctor-note.update')->middleware('staff');
+        Route::delete('/{note}', [DoctorNoteController::class, 'destroy'])->name('doctor-note.destroy')->middleware('staff');
         Route::get('/device/{device}/range', [DoctorNoteController::class, 'getRange'])->name('doctor-note.range');
     });
 
@@ -137,6 +138,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/users/{user}/update-role', [UserManagementController::class, 'updateRole'])->name('users.updateRole');
         Route::post('/users/{user}/deactivate', [UserManagementController::class, 'deactivateUser'])->name('users.deactivate');
         Route::post('/users/{user}/activate', [UserManagementController::class, 'activateUser'])->name('users.activate');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
         Route::post('/users/{user}/refresh-code', [UserManagementController::class, 'refreshSecurityCode'])->name('users.refreshCode');
     });
 });

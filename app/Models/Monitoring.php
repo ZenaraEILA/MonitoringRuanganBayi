@@ -53,16 +53,10 @@ class Monitoring extends Model
     {
         $recommendations = [];
         
-        if ($this->temperature > 30) {
-            $recommendations[] = "🌡️ Suhu terlalu tinggi (>30°C) - Turunkan AC";
-        } elseif ($this->temperature < 15) {
-            $recommendations[] = "❄️ Suhu terlalu rendah (<15°C) - Naikkan suhu AC / tutup ventilasi";
-        }
-
-        if ($this->humidity > 60) {
-            $recommendations[] = "💨 Kelembapan terlalu tinggi (>60%) - Nyalakan ventilasi / dehumidifier";
-        } elseif ($this->humidity < 35) {
-            $recommendations[] = "🏜️ Kelembapan terlalu rendah (<35%) - Kurangi penggunaan pendingin";
+        if ($this->temperature >= 31) {
+            $recommendations[] = "🌡️ Suhu terlalu tinggi (>=31°C) - Turunkan AC";
+        } elseif ($this->temperature <= 29) {
+            $recommendations[] = "❄️ Suhu terlalu rendah (<=29°C) - Naikkan suhu AC / tutup ventilasi";
         }
 
         return !empty($recommendations) ? implode(' | ', $recommendations) : "✅ Kondisi normal, tidak perlu tindakan";
@@ -83,16 +77,10 @@ class Monitoring extends Model
     {
         $recommendations = [];
         
-        if ($this->temperature > 30) {
+        if ($this->temperature >= 31) {
             $recommendations[] = "Turunkan suhu AC";
-        } elseif ($this->temperature < 15) {
+        } elseif ($this->temperature <= 29) {
             $recommendations[] = "Naikkan suhu AC / tutup ventilasi";
-        }
-
-        if ($this->humidity > 60) {
-            $recommendations[] = "Nyalakan ventilasi / dehumidifier";
-        } elseif ($this->humidity < 35) {
-            $recommendations[] = "Kurangi penggunaan pendingin";
         }
 
         return $recommendations;
@@ -104,6 +92,14 @@ class Monitoring extends Model
      */
     public static function checkEmergencyCondition($deviceId)
     {
+        // Ambil data terbaru terlebih dahulu
+        $latest = self::where('device_id', $deviceId)->latest('recorded_at')->first();
+        
+        // Jika data terbaru sudah "Aman", maka kondisi darurat dianggap selesai (banner hilang)
+        if (!$latest || $latest->status === 'Aman') {
+            return false;
+        }
+
         $fiveMinutesAgo = Carbon::now()->subMinutes(5);
         
         $unsafeCount = self::where('device_id', $deviceId)
@@ -111,7 +107,7 @@ class Monitoring extends Model
             ->where('recorded_at', '>=', $fiveMinutesAgo)
             ->count();
         
-        // Assuming data comes every 1 minute, 5+ records = 5 minutes
+        // Tetap anggap darurat jika ada 5+ data "Tidak Aman" dalam 5 menit terakhir
         return $unsafeCount >= 5;
     }
 

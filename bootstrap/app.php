@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminRole::class,
             'petugas' => \App\Http\Middleware\PetugasRole::class,
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
+            'staff' => \App\Http\Middleware\StaffOnly::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

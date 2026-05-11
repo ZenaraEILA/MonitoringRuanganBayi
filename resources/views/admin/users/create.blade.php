@@ -65,8 +65,9 @@
 
                         <div class="mb-3">
                             <label for="role" class="form-label">Role Akses <span class="text-danger">*</span></label>
-                            <select class="form-select" id="role" name="role" required>
+                            <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
                                 <option value="petugas" {{ old('role') == 'petugas' ? 'selected' : '' }}>Petugas (Standar)</option>
+                                <option value="public" {{ old('role') == 'public' ? 'selected' : '' }}>Publik (Hanya Lihat)</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin (Penuh)</option>
                             </select>
                         </div>

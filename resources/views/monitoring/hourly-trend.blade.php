@@ -1,13 +1,13 @@
 @extends('layouts.main')
 
-@section('title', 'Tren Harian - Sistem Monitoring')
+@section('title', 'Data Harian - Sistem Monitoring')
 
 @section('content')
 
 <!-- Page Header -->
 <div class="row mb-4">
     <div class="col-12">
-        <h1 class="h3 mb-0"><i class="fas fa-chart-line"></i> Analisis Tren Harian</h1>
+        <h1 class="h3 mb-0"><i class="fas fa-chart-line"></i> Analisis Data Harian</h1>
         <small class="text-muted">Monitoring detail per jam untuk tanggal yang dipilih</small>
     </div>
 </div>
@@ -19,16 +19,8 @@
     </div>
     <div class="card-body">
         <form action="{{ route('monitoring.hourly-trend') }}" method="get" class="row g-3">
-            <div class="col-md-3">
-                <label for="device_id" class="form-label">Ruangan/Device</label>
-                <select name="device_id" id="device_id" class="form-select">
-                    @foreach($devices as $device)
-                        <option value="{{ $device->id }}" {{ $device->id == $selectedDevice ? 'selected' : '' }}>
-                            {{ $device->device_name }} ({{ $device->location }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <!-- Hidden device_id since only 1 room exists -->
+            <input type="hidden" name="device_id" value="{{ $selectedDevice }}">
             <div class="col-md-3">
                 <label for="date" class="form-label">Tanggal</label>
                 <input type="date" name="date" id="date" class="form-control" value="{{ $date }}">
@@ -143,15 +135,6 @@
         </div>
     </div>
 
-    <!-- Professional Chart Container - MetaTrader 5 Style -->
-    <div class="card mb-4">
-        <div class="card-header" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: white;">
-            <h5 class="mb-0" style="color: white;"><i class="fas fa-chart-simple"></i> Grafik Analisis Tren Candle</h5>
-        </div>
-        <div class="card-body" style="background-color: #FFFFFF;">
-            <div id="candleChart" style="height: 500px;"></div>
-        </div>
-    </div>
 
     <!-- Secondary Chart: Temperature & Humidity Overlay -->
     <div class="card mb-4">
@@ -244,7 +227,7 @@
     <!-- No Data Message -->
     <div class="alert alert-info alert-dismissible fade show" role="alert">
         <i class="fas fa-info-circle me-2"></i>
-        <strong>Tidak ada data</strong> untuk tanggal dan device yang dipilih. Silakan pilih tanggal lain atau tunggu hingga ada data monitoring.
+        <strong>Tidak ada data</strong> untuk tanggal yang dipilih. Silakan pilih tanggal lain atau tunggu hingga ada data monitoring.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
@@ -264,105 +247,12 @@
             return;
         }
 
-        // Prepare candlestick data
-        const candleData = hourlyData.map((d, idx) => ({
-            x: new Date(new Date().toDateString() + ' ' + (String(d.hour).padStart(2, '0')) + ':00'),
-            y: [
-                d.min_temp || 0,      // Open
-                d.max_temp || 0,      // High
-                d.min_temp || 0,      // Low
-                d.avg_temp || 0       // Close
-            ]
-        }));
 
         // Prepare overlay data
         const labels = hourlyData.map(d => (String(d.hour).padStart(2, '0')) + ':00');
         const avgTemps = hourlyData.map(d => parseFloat(d.avg_temp) || 0);
         const avgHumidities = hourlyData.map(d => parseFloat(d.avg_humidity) || 0);
 
-        // Chart 1: Candlestick Chart (MetaTrader 5 Style)
-        const candleOptions = {
-            chart: {
-                type: 'candlestick',
-                height: 500,
-                zoom: { enabled: true },
-                toolbar: {
-                    show: true,
-                    tools: {
-                        download: true,
-                        selection: true,
-                        zoom: true,
-                        zoomin: true,
-                        zoomout: true,
-                        pan: true,
-                        reset: true
-                    }
-                },
-                background: '#FFFFFF'
-            },
-            title: {
-                text: 'Analisis Tren Suhu (Candlestick)',
-                style: {
-                    color: '#333',
-                    fontSize: '14px'
-                }
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    style: { colors: '#666', fontSize: '11px' }
-                },
-                axisBorder: { color: '#ECEFF1' },
-                axisTicks: { color: '#ECEFF1' }
-            },
-            yaxis: {
-                title: {
-                    text: 'Suhu (°C)',
-                    style: { color: '#E74C3C', fontSize: '12px', fontWeight: 'bold' }
-                },
-                labels: {
-                    style: { colors: '#E74C3C', fontSize: '11px' }
-                }
-            },
-            plotOptions: {
-                candlestick: {
-                    colors: {
-                        upward: '#0056b3',    // Dark blue for up
-                        downward: '#e8f0ff'    // Light blue for down
-                    },
-                    wick: {
-                        useFillColor: true
-                    }
-                }
-            },
-            grid: {
-                borderColor: '#ECEFF1',
-                strokeDashArray: 3,
-                xaxis: { lines: { show: true } },
-                yaxis: { lines: { show: true } }
-            },
-            tooltip: {
-                theme: 'dark',
-                y: {
-                    formatter: function(val) {
-                        return val.toFixed(2) + '°C';
-                    }
-                }
-            }
-        };
-
-        // Series data for candlestick
-        const candleSeries = [{
-            data: candleData
-        }];
-
-        // Render Candlestick Chart
-        const candleChart = new ApexCharts(document.querySelector('#candleChart'), {
-            ...candleOptions,
-            series: candleSeries
-        });
-
-        candleChart.render();
 
         // Chart 2: Area Chart with dual axis (Overlay)
         const overlayOptions = {

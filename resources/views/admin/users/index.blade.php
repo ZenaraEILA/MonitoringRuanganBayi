@@ -52,15 +52,29 @@ GET /admin/users
             </div>
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-md-2 mb-3">
             <div class="card bg-secondary text-white">
-                <div class="card-body">
+                <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="card-text text-white-50">Petugas</p>
-                            <h3 class="card-title">{{ $totalPetugas }}</h3>
+                            <p class="card-text text-white-50 mb-1 small">Petugas</p>
+                            <h4 class="card-title mb-0">{{ $totalPetugas }}</h4>
                         </div>
-                        <i class="fas fa-user fa-3x opacity-25"></i>
+                        <i class="fas fa-user fa-2x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="card-text text-white-50 mb-1 small">Publik</p>
+                            <h4 class="card-title mb-0">{{ $totalPublic }}</h4>
+                        </div>
+                        <i class="fas fa-eye fa-2x opacity-25"></i>
                     </div>
                 </div>
             </div>
@@ -148,9 +162,13 @@ GET /admin/users
                                 <span class="badge bg-danger">
                                     <i class="fas fa-crown"></i> Admin
                                 </span>
-                            @else
+                            @elseif($user->role === 'petugas')
                                 <span class="badge bg-secondary">
                                     <i class="fas fa-user"></i> Petugas
+                                </span>
+                            @else
+                                <span class="badge bg-info">
+                                    <i class="fas fa-eye"></i> Publik
                                 </span>
                             @endif
                         </td>
@@ -171,10 +189,16 @@ GET /admin/users
                             </small>
                         </td>
                         <td>
-                            <a href="{{ route('admin.users.show', $user) }}"
-                               class="btn btn-sm btn-info" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </a>
+                            <div class="btn-group">
+                                <a href="{{ route('admin.users.show', $user) }}"
+                                   class="btn btn-sm btn-info text-white" title="Lihat Detail">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.users.edit', $user) }}"
+                                   class="btn btn-sm btn-warning" title="Edit Profil">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     @empty

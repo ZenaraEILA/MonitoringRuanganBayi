@@ -387,10 +387,58 @@
                 width: 300px;
                 height: 300px;
             }
+            
+            .btn-public-float {
+                top: 10px !important;
+                right: 10px !important;
+                padding: 8px 15px !important;
+                font-size: 13px !important;
+            }
+        }
+
+        /* Public Login Button */
+        .btn-public-float {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .btn-public-float:hover {
+            background: #0d6efd;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-public-float i {
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
+    <!-- Public Quick Access Button -->
+    <form action="{{ route('login.public') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn-public-float border-0">
+            <i class="fas fa-eye"></i>
+            <span>Publik</span>
+        </button>
+    </form>
     <div class="login-wrapper">
         <div class="login-card">
             <div class="login-header">

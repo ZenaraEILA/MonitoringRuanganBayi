@@ -30,25 +30,27 @@
 </div>
 
 <!-- Emergency Alert (if exists) -->
-@if(count($emergencyDevices) > 0)
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ⚠️ KONDISI DARURAT!</h4>
-    <p class="mb-2">Terdapat <strong>{{ count($emergencyDevices) }}</strong> ruangan dalam kondisi tidak normal selama lebih dari 5 menit:</p>
-    <ul class="mb-0">
-        @foreach($emergencyDevices as $device)
-        <li>
-            <strong>{{ $device->device_name }}</strong> ({{ $device->location }})
-            @if(isset($emergencyDetails[$device->id]))
-                <br><small>Suhu: {{ $emergencyDetails[$device->id]->temperature }}°C | Kelembapan: {{ $emergencyDetails[$device->id]->humidity }}% | Waktu: {{ $emergencyDetails[$device->id]->recorded_at->diffForHumans() }}</small>
-            @endif
-        </li>
-        @endforeach
-    </ul>
-    <hr>
-    <a href="{{ route('monitoring.emergency-incidents') }}" class="btn btn-sm btn-outline-danger">Lihat Semua Insiden Darurat</a>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div id="emergencyAlertContainer">
+    @if(count($emergencyDevices) > 0)
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> ⚠️ KONDISI DARURAT!</h4>
+        <p class="mb-2">Terdapat <strong>{{ count($emergencyDevices) }}</strong> ruangan dalam kondisi tidak normal selama lebih dari 5 menit:</p>
+        <ul class="mb-0">
+            @foreach($emergencyDevices as $device)
+            <li>
+                <strong>{{ $device->device_name }}</strong> ({{ $device->location }})
+                @if(isset($emergencyDetails[$device->id]))
+                    <br><small>Suhu: {{ $emergencyDetails[$device->id]->temperature }}°C | Kelembapan: {{ $emergencyDetails[$device->id]->humidity }}% | Waktu: {{ $emergencyDetails[$device->id]->recorded_at->diffForHumans() }}</small>
+                @endif
+            </li>
+            @endforeach
+        </ul>
+        <hr>
+        <a href="{{ route('monitoring.emergency-incidents') }}" class="btn btn-sm btn-outline-danger">Lihat Semua Insiden Darurat</a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 </div>
-@endif
 
 <!-- Devices Monitoring -->
 <div class="row" id="devicesContainer">
@@ -61,7 +63,7 @@
             <div class="card-header border-0 py-3">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <h5 class="mb-0 fw-bold"><i class="fas fa-door-closed me-2 text-white-50"></i>{{ $device->device_name }}</h5>
-                    <span class="badge rounded-pill device-status-badge {{ $device->monitorings->count() > 0 && $device->monitorings->first()->status === 'Aman' ? 'badge-aman' : 'badge-tidak-aman' }} border border-light">
+                    <span class="badge rounded-pill device-status-badge {{ $device->monitorings->count() > 0 && $device->monitorings->first()->status === 'Aman' ? 'bg-success' : 'bg-danger' }} border border-light">
                         <span class="device-status-text">{{ $device->monitorings->count() > 0 ? $device->monitorings->first()->status : 'No Data' }}</span>
                     </span>
                 </div>
@@ -83,145 +85,113 @@
                     </small>
                 </div>
 
-                @if($device->monitorings->count() > 0)
-                    @php
-                        $monitoring = $device->monitorings->first();
-                        
-                        // Check if device is connected
-                        $is_connected = false;
-                        if ($monitoring) {
-                            $dbNow = \DB::selectOne('SELECT NOW() as db_time');
-                            $serverTime = new \DateTime($dbNow->db_time);
-                            $diff = $serverTime->diff($monitoring->recorded_at);
-                            $secondsAgo = ($diff->days * 86400) + ($diff->h * 3600) + ($diff->i * 60) + $diff->s;
-                            $is_connected = $secondsAgo <= 15;
-                        }
-                    @endphp
-                    <div class="row text-center mb-4">
-                        <div class="col-6 border-end">
-                            <div class="text-muted mb-1" style="font-size: 0.85rem;"><i class="fas fa-temperature-half me-1"></i>Suhu</div>
-                            <div class="temp-display device-temperature">
-                                <span id="temp-val-{{ $device->id }}" class="device-temp-value fw-bold" style="font-size:2.2rem; color:{{ $monitoring->temperature < 15 || $monitoring->temperature > 30 ? '#dc3545' : '#198754' }};">{{ $is_connected ? number_format($monitoring->temperature, 1) : '0' }}</span><span class="fs-5" style="color:{{ $monitoring->temperature < 15 || $monitoring->temperature > 30 ? '#dc3545' : '#198754' }};">°C</span>
-                            </div>
-                            <div class="mt-1">
-                                <span class="badge bg-light text-secondary border"><i class="fas fa-info-circle"></i> 15-30°C</span>
-                            </div>
+                @php
+                    $monitoring = $device->monitorings->first();
+                    
+                    // Check if device is connected (last data within 15 seconds)
+                    $is_connected = false;
+                    if ($monitoring) {
+                        $dbNow = \DB::selectOne('SELECT NOW() as db_time');
+                        $serverTime = new \DateTime($dbNow->db_time);
+                        $diff = $serverTime->diff($monitoring->recorded_at);
+                        $secondsAgo = ($diff->days * 86400) + ($diff->h * 3600) + ($diff->i * 60) + $diff->s;
+                        $is_connected = $secondsAgo <= 15;
+                    }
+
+                    // Only show values if connected
+                    $temperature = ($monitoring && $is_connected) ? $monitoring->temperature : 0;
+                    $humidity = ($monitoring && $is_connected) ? $monitoring->humidity : 0;
+                    $status = ($monitoring && $is_connected) ? $monitoring->status : 'OFFLINE';
+                @endphp
+
+                <div class="row text-center mb-4">
+                    <div class="col-6 border-end">
+                        <div class="text-muted mb-1" style="font-size: 0.85rem;"><i class="fas fa-temperature-half me-1"></i>Suhu</div>
+                        <div class="temp-display device-temperature">
+                            <span id="temp-val-{{ $device->id }}" class="device-temp-value fw-bold" style="font-size:2.2rem; color:{{ ($temperature <= 29 || $temperature >= 31) && $monitoring ? '#dc3545' : ($monitoring ? '#198754' : '#6c757d') }};">
+                                {{ $monitoring ? number_format($temperature, 1) : '0' }}
+                            </span><span class="fs-5" style="color:{{ ($temperature <= 29 || $temperature >= 31) && $monitoring ? '#dc3545' : ($monitoring ? '#198754' : '#6c757d') }};">°C</span>
                         </div>
-                        <div class="col-6">
-                            <div class="text-muted mb-1" style="font-size: 0.85rem;"><i class="fas fa-droplet me-1"></i>Kelembapan</div>
-                            <div class="humidity-display device-humidity">
-                                <span id="hum-val-{{ $device->id }}" class="device-humidity-value fw-bold" style="font-size:2.2rem; color:{{ $monitoring->humidity < 35 || $monitoring->humidity > 60 ? '#dc3545' : '#198754' }};">{{ $is_connected ? number_format($monitoring->humidity, 1) : '0' }}</span><span class="fs-5" style="color:{{ $monitoring->humidity < 35 || $monitoring->humidity > 60 ? '#dc3545' : '#198754' }};">%</span>
-                            </div>
-                            <div class="mt-1">
-                                <span class="badge bg-light text-secondary border"><i class="fas fa-info-circle"></i> 35-60%</span>
-                            </div>
+                        <div class="mt-1">
+                            <span class="badge bg-light text-secondary border"><i class="fas fa-info-circle"></i> 29.1 - 30.9 °C</span>
                         </div>
                     </div>
-                    
-                    <!-- Hardware Status -->
-                    @php
-                        $temp = $monitoring ? $monitoring->temperature : 25;
-                        
-                        $fan1_on = $is_connected && $temp >= 28;
-                        $fan2_on = $is_connected && $temp > 30;
-                        $heater_on = $is_connected && $temp < 28;
-                    @endphp
-                    <div class="row text-center mb-4 border-top pt-3 mx-0">
-                        <div class="col-4 border-end px-1">
-                            <div class="text-muted mb-2 text-truncate" style="font-size: 0.75rem; font-weight: 600;">Kipas 1</div>
-                            <div class="device-fan-1 mb-2">
-                                <i class="fas fa-fan fs-3 fan-icon {{ $fan1_on ? 'fan-spin text-primary' : 'text-secondary opacity-50' }}" id="fan1-icon-{{ $device->id }}"></i>
-                            </div>
-                            <span class="badge {{ $fan1_on ? 'bg-primary' : 'bg-secondary' }}" style="font-size: 0.65rem;" id="fan1-badge-{{ $device->id }}">{{ $fan1_on ? 'NYALA' : 'MATI' }}</span>
+                    <div class="col-6">
+                        <div class="text-muted mb-1" style="font-size: 0.85rem;"><i class="fas fa-droplet me-1"></i>Kelembapan</div>
+                        <div class="humidity-display device-humidity">
+                            <span id="hum-val-{{ $device->id }}" class="device-humidity-value fw-bold" style="font-size:2.2rem; color:{{ ($humidity < 35 || $humidity > 60) && $monitoring ? '#dc3545' : ($monitoring ? '#198754' : '#6c757d') }};">
+                                {{ $monitoring ? number_format($humidity, 1) : '0' }}
+                            </span><span class="fs-5" style="color:{{ ($humidity < 35 || $humidity > 60) && $monitoring ? '#dc3545' : ($monitoring ? '#198754' : '#6c757d') }};">%</span>
                         </div>
-                        <div class="col-4 border-end px-1">
-                            <div class="text-muted mb-2 text-truncate" style="font-size: 0.75rem; font-weight: 600;">Kipas 2</div>
-                            <div class="device-fan-2 mb-2">
-                                <i class="fas fa-fan fs-3 fan-icon {{ $fan2_on ? 'fan-spin text-primary' : 'text-secondary opacity-50' }}" id="fan2-icon-{{ $device->id }}"></i>
-                            </div>
-                            <span class="badge {{ $fan2_on ? 'bg-primary' : 'bg-secondary' }}" style="font-size: 0.65rem;" id="fan2-badge-{{ $device->id }}">{{ $fan2_on ? 'NYALA' : 'MATI' }}</span>
-                        </div>
-                        <div class="col-4 px-1">
-                            <div class="text-muted mb-2 text-truncate" style="font-size: 0.75rem; font-weight: 600;">Penghangat</div>
-                            <div class="device-heater mb-2">
-                                <i class="fas fa-lightbulb fs-3 heater-icon {{ $heater_on ? 'lamp-glow text-warning' : 'text-secondary opacity-50' }}" id="heater-icon-{{ $device->id }}"></i>
-                            </div>
-                            <span class="badge {{ $heater_on ? 'bg-warning text-dark' : 'bg-secondary' }}" style="font-size: 0.65rem;" id="heater-badge-{{ $device->id }}">{{ $heater_on ? 'NYALA' : 'MATI' }}</span>
+                        <div class="mt-1">
+                            <span class="badge bg-light text-secondary border"><i class="fas fa-info-circle"></i> 35-60%</span>
                         </div>
                     </div>
-                    
-                    <!-- Recommendations -->
-                    @php
-                        $recommendations = $monitoring->recommendation_list;
-                    @endphp
-                    @if(count($recommendations) > 0)
+                </div>
+                
+                <!-- Hardware Status -->
+                @php
+                    $fan1_on = $is_connected && $temperature > 29;
+                    $fan2_on = $is_connected && $temperature >= 31;
+                    $heater_on = $is_connected && $temperature <= 29 && $monitoring;
+                @endphp
+                <div class="row text-center mb-4 border-top pt-3 mx-0">
+                    <div class="col-4 border-end px-1">
+                        <div class="text-muted mb-2 text-truncate" style="font-size: 0.75rem; font-weight: 600;">Kipas 1</div>
+                        <div class="device-fan-1 mb-2">
+                            <i class="fas fa-fan fs-3 fan-icon {{ $fan1_on ? 'fan-spin text-primary' : 'text-secondary opacity-50' }}" id="fan1-icon-{{ $device->id }}"></i>
+                        </div>
+                        <span class="badge {{ $fan1_on ? 'bg-primary' : 'bg-secondary' }}" style="font-size: 0.65rem;" id="fan1-badge-{{ $device->id }}">{{ $fan1_on ? 'NYALA' : 'MATI' }}</span>
+                    </div>
+                    <div class="col-4 border-end px-1">
+                        <div class="text-muted mb-2 text-truncate" style="font-size: 0.75rem; font-weight: 600;">Kipas 2</div>
+                        <div class="device-fan-2 mb-2">
+                            <i class="fas fa-fan fs-3 fan-icon {{ $fan2_on ? 'fan-spin text-primary' : 'text-secondary opacity-50' }}" id="fan2-icon-{{ $device->id }}"></i>
+                        </div>
+                        <span class="badge {{ $fan2_on ? 'bg-primary' : 'bg-secondary' }}" style="font-size: 0.65rem;" id="fan2-badge-{{ $device->id }}">{{ $fan2_on ? 'NYALA' : 'MATI' }}</span>
+                    </div>
+                    <div class="col-4 px-1">
+                        <div class="text-muted mb-2 text-truncate" style="font-size: 0.75rem; font-weight: 600;">Penghangat</div>
+                        <div class="device-heater mb-2">
+                            <i class="fas fa-lightbulb fs-3 heater-icon {{ $heater_on ? 'lamp-glow text-warning' : 'text-secondary opacity-50' }}" id="heater-icon-{{ $device->id }}"></i>
+                        </div>
+                        <span class="badge {{ $heater_on ? 'bg-warning text-dark' : 'bg-secondary' }}" style="font-size: 0.65rem;" id="heater-badge-{{ $device->id }}">{{ $heater_on ? 'NYALA' : 'MATI' }}</span>
+                    </div>
+                </div>
+                
+                <!-- Recommendations -->
+                <div id="recommendation-container-{{ $device->id }}">
+                    @if($monitoring && count($monitoring->recommendation_list) > 0)
                         <div class="alert alert-danger mb-4 py-2 px-3 border-0" style="background-color: #fff5f5; border-left: 4px solid #dc3545 !important;">
                             <small class="fw-bold text-danger"><i class="fas fa-exclamation-triangle me-1"></i> Rekomendasi Tindakan:</small>
                             <ul class="mb-0 mt-1 ps-3 text-danger" style="font-size: 0.85rem;">
-                            @foreach($recommendations as $rec)
+                            @foreach($monitoring->recommendation_list as $rec)
                                 <li>{{ $rec }}</li>
                             @endforeach
                             </ul>
                         </div>
                     @endif
+                </div>
 
-                    <!-- AC Control Widget -->
-                    @include('dashboard.ac-control-widget', ['device' => $device, 'monitoring' => $monitoring])
+                <!-- AC Control Widget -->
+                @include('dashboard.ac-control-widget', ['device' => $device, 'monitoring' => $monitoring])
 
-                    <!-- Statistics for today -->
-                    @if(isset($deviceStatistics[$device->id]))
-                        <div class="device-stats mt-4 bg-light rounded-3 p-3 border">
-                            <div class="text-muted mb-2" style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Statistik Hari Ini</div>
-                            
-                            <div class="d-flex justify-content-between mb-2 pb-2 border-bottom" style="font-size: 0.85rem;">
-                                <div><i class="fas fa-temperature-half text-danger"></i> Suhu</div>
-                                <div class="text-end">
-                                    <span class="fw-bold">{{ $deviceStatistics[$device->id]['avg_temp'] }}°C</span> (Rata)<br>
-                                    <span class="text-muted" style="font-size: 0.75rem;">Max: {{ $deviceStatistics[$device->id]['max_temp'] }}° | Min: {{ $deviceStatistics[$device->id]['min_temp'] }}°</span>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between mb-2" style="font-size: 0.85rem;">
-                                <div><i class="fas fa-droplet text-info"></i> Lembap</div>
-                                <div class="text-end">
-                                    <span class="fw-bold">{{ $deviceStatistics[$device->id]['avg_humidity'] }}%</span> (Rata)<br>
-                                    <span class="text-muted" style="font-size: 0.75rem;">Max: {{ $deviceStatistics[$device->id]['max_humidity'] }}% | Min: {{ $deviceStatistics[$device->id]['min_humidity'] }}%</span>
-                                </div>
-                            </div>
-
-                            @if($deviceStatistics[$device->id]['unsafe_count'] > 0)
-                            <div class="mt-2 pt-2 border-top text-danger" style="font-size: 0.8rem;">
-                                ⚠️ <strong>{{ $deviceStatistics[$device->id]['unsafe_count'] }} kali</strong> kondisi tidak normal hari ini
-                            </div>
-                            @endif
-                        </div>
-                    @endif
-
-                    <div class="mt-4 text-center">
-                        <span class="device-recorded-time badge bg-light text-muted border px-3 py-2 rounded-pill shadow-sm">
-                            <i class="fas fa-clock me-1"></i> Terakhir diperbarui: 
+                <div class="mt-4 text-center">
+                    <span class="device-recorded-time badge bg-light text-muted border px-3 py-2 rounded-pill shadow-sm">
+                        <i class="fas fa-clock me-1"></i> 
+                        @if($monitoring)
+                            Terakhir diperbarui: 
                             @php
                                 $diffMinutes = now()->diffInMinutes($monitoring->recorded_at);
-                                if ($diffMinutes < 0) {
-                                    echo 'sekarang';
-                                } elseif ($diffMinutes === 0) {
-                                    echo 'sekarang';
-                                } elseif ($diffMinutes === 1) {
-                                    echo '1 menit lalu';
-                                } elseif ($diffMinutes < 60) {
-                                    echo $diffMinutes . ' menit lalu';
-                                } else {
-                                    $hours = intval($diffMinutes / 60);
-                                    echo ($hours === 1 ? '1 jam' : $hours . ' jam') . ' lalu';
-                                }
+                                if ($diffMinutes <= 0) echo 'sekarang';
+                                elseif ($diffMinutes < 60) echo $diffMinutes . ' menit lalu';
+                                else echo intval($diffMinutes / 60) . ' jam lalu';
                             @endphp
-                        </span>
-                    </div>
-                @else
-                    <div class="text-center py-5">
-                        <p class="text-muted">Belum ada data monitoring</p>
-                    </div>
-                @endif
+                        @else
+                            Menunggu data dari Arduino...
+                        @endif
+                    </span>
+                </div>
             </div>
         </div>
             </div>
@@ -277,8 +247,7 @@
     @endforelse
 </div>
 
-<!-- All Devices Status Indicator -->
-@include('partials.devices-status')
+
 
 <!-- Overview KPI Cards -->
 <div class="row mb-4">
@@ -359,6 +328,7 @@
 
 
 <!-- Quick Actions -->
+@if(auth()->user()->role !== 'public')
 <div class="row mt-4 mb-5">
     <div class="col-12">
         <div class="d-flex align-items-center mb-3">
@@ -369,7 +339,7 @@
                 <a href="{{ route('monitoring.history') }}" class="text-decoration-none">
                     <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 hover-lift">
                         <div class="mb-2"><i class="fas fa-history text-primary fs-3"></i></div>
-                        <span class="text-dark fw-bold" style="font-size: 0.85rem;">Liwayat</span>
+                        <span class="text-dark fw-bold" style="font-size: 0.85rem;">Riwayat</span>
                     </div>
                 </a>
             </div>
@@ -385,7 +355,7 @@
                 <a href="{{ route('monitoring.hourly-trend') }}" class="text-decoration-none">
                     <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 hover-lift">
                         <div class="mb-2"><i class="fas fa-chart-line text-success fs-3"></i></div>
-                        <span class="text-dark fw-bold" style="font-size: 0.85rem;">Tren Harian</span>
+                        <span class="text-dark fw-bold" style="font-size: 0.85rem;">Data Harian</span>
                     </div>
                 </a>
             </div>
@@ -418,6 +388,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <style>
 .hover-lift {
@@ -700,6 +671,10 @@ async function pollRealtimeData() {
         const json = await res.json();
 
         if (json.success && Array.isArray(json.data)) {
+            // Update emergency alert
+            const emergencyDevices = json.data.filter(d => d.is_emergency);
+            updateEmergencyAlert(emergencyDevices);
+
             json.data.forEach(device => updateDeviceUI(device));
             // Update clock
             const el = document.getElementById('lastUpdateTime');
@@ -715,6 +690,60 @@ async function pollRealtimeData() {
         isPollRunning = false;
         if (spinner) spinner.classList.remove('spinning');
     }
+}
+
+// ================================================================
+//  UPDATE EMERGENCY ALERT
+// ================================================================
+function updateEmergencyAlert(emergencyDevices) {
+    const container = document.getElementById('emergencyAlertContainer');
+    if (!container) return;
+
+    // Jika tidak ada darurat, kosongkan container
+    if (emergencyDevices.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    // Cek apakah konten saat ini sudah sama (untuk menghindari flicker)
+    // Sederhana: cek jumlah device
+    const currentAlert = container.querySelector('.alert');
+    const currentCount = container.querySelectorAll('li').length;
+    
+    if (currentAlert && currentCount === emergencyDevices.length) {
+        // Update waktu diff saja jika perlu, tapi untuk sekarang biarkan full update jika data berubah
+    }
+
+    let html = `
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-start border-5 border-danger" role="alert">
+            <h4 class="alert-heading fw-bold"><i class="fas fa-exclamation-triangle animate-pulse"></i> ⚠️ KONDISI DARURAT!</h4>
+            <p class="mb-2">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal selama lebih dari 5 menit:</p>
+            <ul class="mb-0">
+    `;
+
+    emergencyDevices.forEach(device => {
+        html += `
+            <li class="mb-1">
+                <strong>${device.device_name}</strong> (${device.location})
+                ${device.emergency_detail ? 
+                    `<br><small class="text-danger-emphasis">Suhu: ${device.emergency_detail.temperature}°C | Kelembapan: ${device.emergency_detail.humidity}% | Waktu: ${device.emergency_detail.diff_for_humans}</small>` 
+                    : ''}
+            </li>
+        `;
+    });
+
+    html += `
+            </ul>
+            <hr class="my-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/monitoring/emergency-incidents" class="btn btn-sm btn-danger px-3">Lihat Semua Insiden Darurat</a>
+                <small class="text-danger-emphasis fw-bold"><i class="fas fa-sync fa-spin me-1"></i> Terpantau Real-time</small>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+
+    container.innerHTML = html;
 }
 
 // ================================================================
@@ -776,7 +805,7 @@ function updateDeviceUI(device) {
         const tempStr  = isConnected ? tempNum.toFixed(1) : '0';
         const tempEl   = document.getElementById(`temp-val-${device.id}`);
         const tempColor = !isConnected ? C_OFFLINE
-            : (tempNum < 15 || tempNum > 30) ? C_DANGER : C_SUCCESS;
+            : (tempNum <= 29 || tempNum >= 31) ? C_DANGER : C_SUCCESS;
 
         if (tempEl) {
             tempEl.textContent = tempStr;
@@ -816,16 +845,35 @@ function updateDeviceUI(device) {
     if (temp !== null) {
         const t   = parseFloat(temp);
         const on  = isConnected;
-        const f1  = on && t >= 28;
-        const f2  = on && t >  30;
-        const htr = on && t <  28;
+        const f1  = on && t >  29;
+        const f2  = on && t >= 31;
+        const htr = on && t <= 29;
 
         setHardwareStatus(device.id, 'fan1',   f1,  'bg-primary', 'NYALA', 'MATI');
         setHardwareStatus(device.id, 'fan2',   f2,  'bg-primary', 'NYALA', 'MATI');
         setHardwareStatus(device.id, 'heater', htr, 'bg-warning text-dark', 'NYALA', 'MATI');
     }
 
-    // ---- 6. Timestamp terakhir ----
+    // ---- 6. Recommendations ----
+    const recContainer = document.getElementById(`recommendation-container-${device.id}`);
+    if (recContainer) {
+        if (isConnected && device.recommendations && device.recommendations.length > 0) {
+            let recHtml = `
+                <div class="alert alert-danger mb-4 py-2 px-3 border-0" style="background-color: #fff5f5; border-left: 4px solid #dc3545 !important;">
+                    <small class="fw-bold text-danger"><i class="fas fa-exclamation-triangle me-1"></i> Rekomendasi Tindakan:</small>
+                    <ul class="mb-0 mt-1 ps-3 text-danger" style="font-size: 0.85rem;">
+            `;
+            device.recommendations.forEach(rec => {
+                recHtml += `<li>${rec}</li>`;
+            });
+            recHtml += `</ul></div>`;
+            recContainer.innerHTML = recHtml;
+        } else {
+            recContainer.innerHTML = '';
+        }
+    }
+
+    // ---- 7. Timestamp terakhir ----
     const recEl = card.querySelector('.device-recorded-time');
     if (recEl && lastUpdate) {
         recEl.innerHTML = `<i class="fas fa-clock me-1"></i> Terakhir diperbarui: ${getRelativeTime(new Date(lastUpdate))}`;

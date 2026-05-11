@@ -161,7 +161,7 @@
                                 <div class="help-indicator">
                                     <div class="indicator-light safe"></div>
                                     <strong>Hijau =</strong>
-                                    <span>NORMAL (15-30°C)</span>
+                                    <span>NORMAL (28-30°C)</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
