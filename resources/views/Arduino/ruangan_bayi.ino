@@ -17,8 +17,8 @@ DHT dht(DHTPIN, DHTTYPE);
 // ============ KONFIGURASI WIFI & API ============
 const char* ssid = "WIFI";               // Sesuaikan dengan WiFi Anda
 const char* password = "pppppppp";
-const char* serverIP = "192.168.137.1";        // IP Laptop Anda (GANTI KE DOMAIN JIKA SUDAH HOSTING)
-const int serverPort = 8000;
+const char* serverIP = "roomtempbaby.my.id";        // Domain Anda
+const int serverPort = 80;
 const char* apiEndpoint = "/api/monitoring/store";
 
 // Device ID unik otomatis berdasarkan Chip ID ESP8266
