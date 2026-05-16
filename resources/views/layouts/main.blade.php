@@ -1013,6 +1013,33 @@
             transform: translateY(1px) scale(0.98);
         }
 
+        /* Utility Classes for Premium UI */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05) !important;
+        }
+        .bg-soft-primary {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+        .icon-shape {
+            width: 48px;
+            height: 48px;
+            background-position: center;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .icon-xs {
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+        }
+
 </style>
     
 </head>

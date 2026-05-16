@@ -49,103 +49,128 @@
                         @php
                             $students = [
                                 [
-                                    'name' => 'Aisatu Sa’baniyah',
+                                    'name' => 'Aisatu Sa\'baniyah',
                                     'gender' => 'Perempuan',
-                                    'dob' => '12 Januari 2005',
-                                    'age' => 21,
-                                    'role' => 'Project Manager',
-                                    'phone' => '+62 812-1111-2222',
+                                    'dob' => '14 Agustus 2007',
+                                    'age' => 18,
+                                    'role' => 'Maket Desain & Project Secretary',
+                                    'phone' => '+62 8810-3642-9035',
                                     'email' => 'aisatu@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Aisatu+Sabaniyah&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Aisatu+Sabaniyah&background=0d6efd&color=fff'
                                 ],
                                 [
                                     'name' => 'Aisyah Nur R',
                                     'gender' => 'Perempuan',
-                                    'dob' => '24 Februari 2005',
-                                    'age' => 21,
-                                    'role' => 'UI/UX Designer',
+                                    'dob' => 'Agustus 2008',
+                                    'age' => 17,
+                                    'role' => 'Desain Maket, Project Secretary & Web Designer',
                                     'phone' => '+62 812-3333-4444',
                                     'email' => 'aisyah@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Aisyah+Nur&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Aisyah+Nur&background=0d6efd&color=fff'
                                 ],
                                 [
                                     'name' => 'Aisyiah Rizkika',
                                     'gender' => 'Perempuan',
-                                    'dob' => '05 Maret 2005',
-                                    'age' => 21,
-                                    'role' => 'Frontend Developer',
+                                    'dob' => '02 Mei 2008',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Web Designer',
                                     'phone' => '+62 812-5555-6666',
                                     'email' => 'aisyiah@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Aisyiah+Rizkika&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Aisyiah+Rizkika&background=0d6efd&color=fff'
                                 ],
                                 [
                                     'name' => 'Angga Dwi S',
                                     'gender' => 'Laki-laki',
-                                    'dob' => '17 April 2005',
-                                    'age' => 21,
-                                    'role' => 'Backend Developer',
+                                    'dob' => '14 Mei 2007',
+                                    'age' => 19,
+                                    'role' => 'Team Leader & Desain Maket',
                                     'phone' => '+62 812-7777-8888',
                                     'email' => 'angga@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Angga+Dwi&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Angga+Dwi&background=0d6efd&color=fff'
                                 ],
                                 [
                                     'name' => 'Arfan Restu R',
                                     'gender' => 'Laki-laki',
-                                    'dob' => '09 Mei 2005',
-                                    'age' => 21,
-                                    'role' => 'Database Admin',
+                                    'dob' => '15 Agustus 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Full Stack Developer',
                                     'phone' => '+62 812-9999-0000',
                                     'email' => 'arfan@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Arfan+Restu&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Arfan+Restu&background=0d6efd&color=fff'
                                 ],
                                 [
                                     'name' => 'Ario Ilham K',
                                     'gender' => 'Laki-laki',
-                                    'dob' => '21 Juni 2005',
-                                    'age' => 20,
-                                    'role' => 'IoT Engineer',
+                                    'dob' => '22 November 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket, IoT & Web Developer',
                                     'phone' => '+62 813-1111-2222',
                                     'email' => 'ario@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Ario+Ilham&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Ario+Ilham&background=0d6efd&color=fff'
                                 ],
                                 [
                                     'name' => 'Azzahra Khayla R',
                                     'gender' => 'Perempuan',
-                                    'dob' => '30 Juli 2005',
-                                    'age' => 20,
-                                    'role' => 'QA Analyst',
-                                    'phone' => '+62 813-3333-4444',
+                                    'dob' => '26 September 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Project Secretary',
+                                    'phone' => '+62 813-5769-9710',
                                     'email' => 'azzahra@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Azzahra+Khayla&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Azzahra+Khayla&background=0d6efd&color=fff'
                                 ],
                                 [
-                                    'name' => 'Calista Andra f',
+                                    'name' => 'Calista Andra F',
                                     'gender' => 'Perempuan',
-                                    'dob' => '14 Agustus 2005',
-                                    'age' => 20,
-                                    'role' => 'System Analyst',
+                                    'dob' => '14 Oktober 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Mockup Specialist',
                                     'phone' => '+62 813-5555-6666',
                                     'email' => 'calista@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Calista+Andra&background=random'
+                                    'image' => 'https://ui-avatars.com/api/?name=Calista+Andra&background=0d6efd&color=fff'
                                 ]
                             ];
                         @endphp
                         @foreach($students as $student)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="card h-100 border-0 shadow-sm bg-light rounded-4">
-                                <div class="card-body p-3 text-start">
-                                    <div class="text-center mb-3">
-                                        <img src="{{ $student['image'] }}" alt="{{ $student['name'] }}" class="rounded-circle shadow-sm mb-2" width="70" height="70">
-                                        <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem;">{{ $student['name'] }}</h6>
-                                        <span class="badge bg-primary bg-gradient rounded-pill text-wrap" style="font-size: 0.7rem; line-height: 1.2;">{{ $student['role'] }}</span>
+                            <div class="card h-100 border-0 shadow-sm hover-lift bg-white rounded-4 overflow-hidden">
+                                <div class="bg-primary bg-gradient py-1"></div>
+                                <div class="card-body p-4 text-start">
+                                    <div class="text-center mb-4">
+                                        <div class="position-relative d-inline-block">
+                                            <img src="{{ $student['image'] }}" alt="{{ $student['name'] }}" class="rounded-circle shadow-sm border border-2 border-white mb-3" width="80" height="80">
+                                            <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" title="Online"></span>
+                                        </div>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ $student['name'] }}</h6>
+                                        <div class="badge bg-soft-primary text-primary rounded-pill px-3 py-1 mb-2" style="font-size: 0.65rem; white-space: normal; line-height: 1.4;">
+                                            {{ $student['role'] }}
+                                        </div>
                                     </div>
-                                    <hr class="text-secondary opacity-25 my-2">
-                                    <ul class="list-unstyled text-muted mb-0" style="font-size: 0.75rem; word-wrap: break-word;">
-                                        <li class="mb-2"><i class="fas {{ $student['gender'] == 'Laki-laki' ? 'fa-mars text-info' : 'fa-venus text-danger' }} fa-fw me-2"></i> {{ $student['gender'] }}</li>
-                                        <li class="mb-2"><i class="fas fa-calendar-alt fa-fw me-2 text-secondary"></i> {{ $student['dob'] }} ({{ $student['age'] }} thn)</li>
-                                        <li class="mb-2"><i class="fas fa-phone-alt fa-fw me-2 text-success"></i> {{ $student['phone'] }}</li>
-                                        <li><i class="fas fa-envelope fa-fw me-2 text-warning"></i> {{ $student['email'] }}</li>
-                                    </ul>
+                                    <div class="pt-2">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="icon-shape icon-xs bg-light rounded-circle me-3">
+                                                <i class="fas {{ $student['gender'] == 'Laki-laki' ? 'fa-mars text-info' : 'fa-venus text-danger' }} fa-fw"></i>
+                                            </div>
+                                            <span class="small text-muted">{{ $student['gender'] }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="icon-shape icon-xs bg-light rounded-circle me-3">
+                                                <i class="fas fa-calendar-alt fa-fw text-secondary"></i>
+                                            </div>
+                                            <span class="small text-muted">{{ $student['dob'] }} ({{ $student['age'] }} thn)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="icon-shape icon-xs bg-light rounded-circle me-3">
+                                                <i class="fas fa-phone-alt fa-fw text-success"></i>
+                                            </div>
+                                            <span class="small text-muted">{{ $student['phone'] }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-shape icon-xs bg-light rounded-circle me-3">
+                                                <i class="fas fa-envelope fa-fw text-warning"></i>
+                                            </div>
+                                            <span class="small text-muted" style="word-break: break-all;">{{ $student['email'] }}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
