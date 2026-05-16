@@ -18,19 +18,10 @@ class UserManagementController extends Controller
     public function index()
     {
         try {
-            $users = User::orderBy('created_at', 'desc')->paginate(10);
-
-            return view('admin.users.index', [
-                'users' => $users,
-                'totalUsers' => User::count(),
-                'totalAdmins' => User::where('role', 'admin')->count(),
-                'totalPetugas' => User::where('role', 'petugas')->count(),
-                'totalPublic' => User::where('role', 'public')->count(),
-                'activeUsers' => User::where('is_active', true)->count(),
-            ]);
+            $users = User::latest()->paginate(10);
+            return view('admin.users.index', compact('users'));
         } catch (\Exception $e) {
-            Log::error('User Management Index Error: ' . $e->getMessage());
-            return redirect()->route('dashboard')->with('error', 'Gagal memuat data user.');
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
