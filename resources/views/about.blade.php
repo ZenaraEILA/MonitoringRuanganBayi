@@ -133,12 +133,18 @@
                             // Proses mapping final
                             $students = [];
                             foreach ($teamData as $member) {
-                                $dbUser = $allUsers->where('email', $member['email'])->first();
+                                // Pencocokan email yang lebih tangguh (case-insensitive & trim)
+                                $dbUser = $allUsers->first(function($u) use ($member) {
+                                    return strtolower(trim($u->email)) === strtolower(trim($member['email']));
+                                });
                                 
                                 if ($dbUser && $dbUser->profile_photo_path) {
-                                    $member['image'] = asset('storage/' . $dbUser->profile_photo_path);
+                                    $path = $dbUser->profile_photo_path;
+                                    // Bersihkan path jika ada double slash
+                                    $fullPath = str_replace('//', '/', 'storage/' . $path);
+                                    $member['image'] = asset($fullPath);
                                 } else {
-                                    $cleanName = str_replace("'", "", $member['name']);
+                                    $cleanName = str_replace(["'", "’"], "", $member['name']);
                                     $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($cleanName) . "&background=0d6efd&color=fff";
                                 }
                                 $students[] = $member;
