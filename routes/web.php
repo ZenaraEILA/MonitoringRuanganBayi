@@ -38,7 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/help/{section}', [HelpController::class, 'section'])->name('help.section')->middleware('staff');
     
     // Tentang Kami
-    Route::view('/tentang-kami', 'about')->name('about');
+    Route::get('/tentang-kami', function() {
+        $users = \App\Models\User::all();
+        return view('about', compact('users'));
+    })->name('about');
 
     // Profile Management
     Route::prefix('profile')->middleware('staff')->group(function () {

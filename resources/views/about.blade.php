@@ -47,7 +47,7 @@
                     <p class="text-muted mb-5">Sistem ini dikembangkan oleh tim ahli kami:</p>
                     <div class="row justify-content-center g-4">
                         @php
-                            $students = [
+                            $teamMembers = [
                                 [
                                     'name' => 'Aisatu Sa\'baniyah',
                                     'gender' => 'Perempuan',
@@ -55,8 +55,7 @@
                                     'age' => 18,
                                     'role' => 'Maket Desain & Project Secretary',
                                     'phone' => '+62 8810-3642-9035',
-                                    'email' => 'aisatu@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Aisatu+Sabaniyah&background=0d6efd&color=fff'
+                                    'email' => 'aisatu@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Aisyah Nur R',
@@ -65,8 +64,7 @@
                                     'age' => 17,
                                     'role' => 'Desain Maket, Project Secretary & Web Designer',
                                     'phone' => '+62 812-3333-4444',
-                                    'email' => 'aisyah@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Aisyah+Nur&background=0d6efd&color=fff'
+                                    'email' => 'aisyah@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Aisyiah Rizkika',
@@ -75,8 +73,7 @@
                                     'age' => 18,
                                     'role' => 'Desain Maket & Web Designer',
                                     'phone' => '+62 812-5555-6666',
-                                    'email' => 'aisyiah@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Aisyiah+Rizkika&background=0d6efd&color=fff'
+                                    'email' => 'aisyiah@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Angga Dwi S',
@@ -85,8 +82,7 @@
                                     'age' => 19,
                                     'role' => 'Team Leader & Desain Maket',
                                     'phone' => '+62 812-7777-8888',
-                                    'email' => 'angga@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Angga+Dwi&background=0d6efd&color=fff'
+                                    'email' => 'angga@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Arfan Restu R',
@@ -95,8 +91,7 @@
                                     'age' => 18,
                                     'role' => 'Desain Maket & Full Stack Developer',
                                     'phone' => '+62 812-9999-0000',
-                                    'email' => 'arfan@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Arfan+Restu&background=0d6efd&color=fff'
+                                    'email' => 'arfan@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Ario Ilham K',
@@ -105,8 +100,7 @@
                                     'age' => 18,
                                     'role' => 'Desain Maket, IoT & Web Developer',
                                     'phone' => '+62 813-1111-2222',
-                                    'email' => 'ario@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Ario+Ilham&background=0d6efd&color=fff'
+                                    'email' => 'ario@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Azzahra Khayla R',
@@ -115,8 +109,7 @@
                                     'age' => 18,
                                     'role' => 'Desain Maket & Project Secretary',
                                     'phone' => '+62 813-5769-9710',
-                                    'email' => 'azzahra@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Azzahra+Khayla&background=0d6efd&color=fff'
+                                    'email' => 'azzahra@monitoring.local'
                                 ],
                                 [
                                     'name' => 'Calista Andra F',
@@ -125,10 +118,24 @@
                                     'age' => 18,
                                     'role' => 'Desain Maket & Mockup Specialist',
                                     'phone' => '+62 813-5555-6666',
-                                    'email' => 'calista@monitoring.local',
-                                    'image' => 'https://ui-avatars.com/api/?name=Calista+Andra&background=0d6efd&color=fff'
+                                    'email' => 'calista@monitoring.local'
                                 ]
                             ];
+
+                            // Map the team members to find their actual database user for photos
+                            $students = array_map(function($member) use ($users) {
+                                // Find user by email (most reliable)
+                                $dbUser = $users->firstWhere('email', $member['email']);
+                                
+                                // Set image: use uploaded photo if exists, otherwise fallback to UI Avatars
+                                if ($dbUser && $dbUser->profile_photo_path) {
+                                    $member['image'] = asset('storage/' . $dbUser->profile_photo_path);
+                                } else {
+                                    $member['image'] = 'https://ui-avatars.com/api/?name=' . urlencode($member['name']) . '&background=0d6efd&color=fff';
+                                }
+                                
+                                return $member;
+                            }, $teamMembers);
                         @endphp
                         @foreach($students as $student)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
@@ -137,8 +144,8 @@
                                 <div class="card-body p-4 text-start">
                                     <div class="text-center mb-4">
                                         <div class="position-relative d-inline-block">
-                                            <img src="{{ $student['image'] }}" alt="{{ $student['name'] }}" class="rounded-circle shadow-sm border border-2 border-white mb-3" width="80" height="80">
-                                            <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" title="Online"></span>
+                                            <img src="{{ $student['image'] }}" alt="{{ $student['name'] }}" class="rounded-circle shadow-sm border border-2 border-white mb-3" width="80" height="80" style="object-fit: cover;">
+                                            <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" title="Aktif"></span>
                                         </div>
                                         <h6 class="fw-bold mb-1 text-dark">{{ $student['name'] }}</h6>
                                         <div class="badge bg-soft-primary text-primary rounded-pill px-3 py-1 mb-2" style="font-size: 0.65rem; white-space: normal; line-height: 1.4;">
