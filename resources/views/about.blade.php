@@ -46,6 +46,104 @@
                     <h3 class="fw-bold mb-4">Tim Pengembang</h3>
                     <p class="text-muted mb-5">Sistem ini dikembangkan oleh tim ahli kami:</p>
                     <div class="row justify-content-center g-4">
+                        @php
+                            // Data tim statis (Metadata)
+                            $teamData = [
+                                [
+                                    'name' => 'Aisatu Sa\'baniyah',
+                                    'gender' => 'Perempuan',
+                                    'dob' => '14 Agustus 2007',
+                                    'age' => 18,
+                                    'role' => 'Maket Desain & Project Secretary',
+                                    'phone' => '+62 8810-3642-9035',
+                                    'email' => 'aisatu@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Aisyah Nur R',
+                                    'gender' => 'Perempuan',
+                                    'dob' => 'Agustus 2008',
+                                    'age' => 17,
+                                    'role' => 'Desain Maket, Project Secretary & Web Designer',
+                                    'phone' => '+62 812-3333-4444',
+                                    'email' => 'aisyah@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Aisyiah Rizkika',
+                                    'gender' => 'Perempuan',
+                                    'dob' => '02 Mei 2008',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Web Designer',
+                                    'phone' => '+62 812-5555-6666',
+                                    'email' => 'aisyiah@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Angga Dwi S',
+                                    'gender' => 'Laki-laki',
+                                    'dob' => '14 Mei 2007',
+                                    'age' => 19,
+                                    'role' => 'Team Leader & Desain Maket',
+                                    'phone' => '+62 812-7777-8888',
+                                    'email' => 'angga@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Arfan Restu R',
+                                    'gender' => 'Laki-laki',
+                                    'dob' => '15 Agustus 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Full Stack Developer',
+                                    'phone' => '+62 812-9999-0000',
+                                    'email' => 'arfan@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Ario Ilham K',
+                                    'gender' => 'Laki-laki',
+                                    'dob' => '22 November 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket, IoT & Web Developer',
+                                    'phone' => '+62 813-1111-2222',
+                                    'email' => 'ario@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Azzahra Khayla R',
+                                    'gender' => 'Perempuan',
+                                    'dob' => '26 September 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Project Secretary',
+                                    'phone' => '+62 813-5769-9710',
+                                    'email' => 'azzahra@monitoring.local'
+                                ],
+                                [
+                                    'name' => 'Calista Andra F',
+                                    'gender' => 'Perempuan',
+                                    'dob' => '14 Oktober 2007',
+                                    'age' => 18,
+                                    'role' => 'Desain Maket & Mockup Specialist',
+                                    'phone' => '+62 813-5555-6666',
+                                    'email' => 'calista@monitoring.local'
+                                ]
+                            ];
+
+                            // Ambil data user dari database untuk foto (jika ada)
+                            try {
+                                $allUsers = \App\Models\User::select('email', 'profile_photo_path')->get();
+                            } catch (\Throwable $e) {
+                                $allUsers = collect();
+                            }
+
+                            // Proses mapping final
+                            $students = [];
+                            foreach ($teamData as $member) {
+                                $dbUser = $allUsers->where('email', $member['email'])->first();
+                                
+                                if ($dbUser && $dbUser->profile_photo_path) {
+                                    $member['image'] = asset('storage/' . $dbUser->profile_photo_path);
+                                } else {
+                                    $cleanName = str_replace("'", "", $member['name']);
+                                    $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($cleanName) . "&background=0d6efd&color=fff";
+                                }
+                                $students[] = $member;
+                            }
+                        @endphp
                         @foreach($students as $student)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="card h-100 border-0 shadow-sm hover-lift bg-white rounded-4 overflow-hidden">

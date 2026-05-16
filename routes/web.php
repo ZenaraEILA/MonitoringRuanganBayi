@@ -16,8 +16,6 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\HelpController;
-use App\Http\Controllers\AboutController;
-use App\Models\User;
 
 /**
  * Auth Routes
@@ -40,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/help/{section}', [HelpController::class, 'section'])->name('help.section')->middleware('staff');
     
     // Tentang Kami
-    Route::get('/tentang-kami', function() { return "Test OK"; })->name('about');
+    Route::view('/tentang-kami', 'about')->name('about');
 
     // Profile Management
     Route::prefix('profile')->middleware('staff')->group(function () {
