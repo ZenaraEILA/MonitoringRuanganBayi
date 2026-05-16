@@ -9,8 +9,6 @@ class AboutController extends Controller
 {
     public function index()
     {
-        $users = User::all();
-        
         $teamData = [
             [
                 'name' => 'Aisatu Sa\'baniyah',
@@ -88,14 +86,8 @@ class AboutController extends Controller
 
         $students = [];
         foreach ($teamData as $member) {
-            $dbUser = $users->where('email', $member['email'])->first();
-            
-            if ($dbUser && $dbUser->profile_photo_path) {
-                $member['image'] = asset('storage/' . $dbUser->profile_photo_path);
-            } else {
-                $nameForAvatar = str_replace("'", "", $member['name']);
-                $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($nameForAvatar) . "&background=0d6efd&color=fff";
-            }
+            $nameForAvatar = str_replace("'", "", $member['name']);
+            $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($nameForAvatar) . "&background=0d6efd&color=fff";
             $students[] = $member;
         }
 
