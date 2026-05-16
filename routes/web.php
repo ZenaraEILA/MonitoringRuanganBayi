@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/help/{section}', [HelpController::class, 'section'])->name('help.section')->middleware('staff');
     
     // Tentang Kami
-    Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
+    Route::get('/tentang-kami', function() { return "Test OK"; })->name('about');
 
     // Profile Management
     Route::prefix('profile')->middleware('staff')->group(function () {
