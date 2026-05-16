@@ -39,12 +39,12 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($friends as $friend) {
-            $email = $friend['username'] . $friend['absen'] . '@monitoring.local';
+            $email = $friend['username'] . '@monitoring.local';
             User::updateOrCreate(
                 ['email' => $email],
                 [
                     'name' => $friend['name'],
-                    'username' => $friend['username'] . $friend['absen'],
+                    'username' => $friend['username'],
                     'password' => Hash::make('password123'),
                     'role' => 'petugas',
                     'hospital_id' => 'ABSEN-' . $friend['absen'],
