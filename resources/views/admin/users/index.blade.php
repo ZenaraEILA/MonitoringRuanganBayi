@@ -172,11 +172,11 @@ GET /admin/users
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-circle-sm bg-primary text-white me-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 35px; height: 35px; font-size: 0.8rem;">
+                                    <div class="avatar-circle-sm bg-primary text-white me-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 35px; height: 35px; font-size: 0.8rem; overflow: hidden;">
                                         @if($user->profile_photo_path)
-                                            <img src="/storage/{{ $user->profile_photo_path }}" alt="" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                                         @else
-                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                            <span>{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                                         @endif
                                     </div>
                                     <div>
@@ -274,7 +274,7 @@ GET /admin/users
 
 @endsection
 
-@section('scripts')
+@section('js')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const selectAll = document.getElementById('selectAll');

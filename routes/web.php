@@ -131,7 +131,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // User Management (Admin Only) - RBAC System
-    Route::prefix('admin')->middleware('is_admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
         Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
