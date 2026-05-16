@@ -157,43 +157,43 @@ GET /admin/users
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($users as $index => $user)
+                        @forelse($users as $index => $u)
                         <tr>
                             <td class="text-center">
                                 <div class="form-check m-0 d-inline-block">
-                                    <input class="form-check-input user-checkbox" type="checkbox" name="ids[]" value="{{ $user->id }}" 
-                                           {{ $user->id === auth()->id() ? 'disabled' : '' }}>
+                                    <input class="form-check-input user-checkbox" type="checkbox" name="ids[]" value="{{ $u->id }}" 
+                                           {{ $u->id === auth()->id() ? 'disabled' : '' }}>
                                 </div>
                             </td>
                             <td>
                                 <span class="text-muted small">
-                                    {{ $users->firstItem() + $index }}
+                                    {{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}
                                 </span>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-circle-sm bg-primary text-white me-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 35px; height: 35px; font-size: 0.8rem; overflow: hidden;">
-                                        @if($user->profile_photo_path)
-                                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                        @if($u->profile_photo_path)
+                                            <img src="/storage/{{ $u->profile_photo_path }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
                                         @else
-                                            <span>{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                                            <span>{{ strtoupper(substr($u->name ?? 'U', 0, 1)) }}</span>
                                         @endif
                                     </div>
                                     <div>
-                                        <div class="fw-bold text-dark">{{ $user->name }}</div>
-                                        <small class="text-muted">Username: {{ $user->username ?? '-' }}</small>
+                                        <div class="fw-bold text-dark">{{ $u->name }}</div>
+                                        <small class="text-muted">@<span>{{ $u->username ?? '-' }}</span></small>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <small><code>{{ $user->email }}</code></small>
+                                <small><code>{{ $u->email }}</code></small>
                             </td>
                             <td>
-                                @if($user->role === 'admin')
+                                @if($u->role === 'admin')
                                     <span class="badge bg-soft-danger text-danger border-danger">
                                         <i class="fas fa-crown"></i> Admin
                                     </span>
-                                @elseif($user->role === 'petugas')
+                                @elseif($u->role === 'petugas')
                                     <span class="badge bg-soft-primary text-primary border-primary">
                                         <i class="fas fa-user"></i> Petugas
                                     </span>
@@ -204,7 +204,7 @@ GET /admin/users
                                 @endif
                             </td>
                             <td>
-                                @if($user->is_active)
+                                @if($u->is_active)
                                     <span class="text-success small fw-bold">
                                         <i class="fas fa-check-circle"></i> Aktif
                                     </span>
@@ -216,24 +216,24 @@ GET /admin/users
                             </td>
                             <td>
                                 <small class="text-muted">
-                                    {{ $user->getLastLoginInfo() }}
+                                    {{ $u->getLastLoginInfo() }}
                                 </small>
                             </td>
                             <td>
                                 <div class="btn-group shadow-sm">
-                                    <a href="{{ route('admin.users.show', $user) }}"
+                                    <a href="{{ route('admin.users.show', $u) }}"
                                        class="btn btn-sm btn-white border" title="Lihat Detail">
                                         <i class="fas fa-eye text-info"></i>
                                     </a>
-                                    <a href="{{ route('admin.users.edit', $user) }}"
+                                    <a href="{{ route('admin.users.edit', $u) }}"
                                        class="btn btn-sm btn-white border" title="Edit Profil">
                                         <i class="fas fa-edit text-warning"></i>
                                     </a>
-                                    @if($user->id !== auth()->id())
+                                    @if($u->id !== auth()->id())
                                     <button type="button" 
                                             class="btn btn-sm btn-white border delete-user-btn" 
-                                            data-id="{{ $user->id }}" 
-                                            data-name="{{ $user->name }}"
+                                            data-id="{{ $u->id }}" 
+                                            data-name="{{ $u->name }}"
                                             title="Hapus User">
                                         <i class="fas fa-trash text-danger"></i>
                                     </button>
