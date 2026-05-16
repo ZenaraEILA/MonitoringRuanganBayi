@@ -1180,8 +1180,16 @@
 
                     @auth
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ auth()->user()->name }}
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            @if(auth()->user()->profile_photo_path)
+                                <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" 
+                                     alt="Profile" 
+                                     class="rounded-circle me-2" 
+                                     style="width: 28px; height: 28px; object-fit: cover; border: 1.5px solid rgba(255,255,255,0.8);">
+                            @else
+                                <i class="fas fa-user-circle me-2"></i>
+                            @endif
+                            {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                             @if(auth()->user()->role === 'admin')
