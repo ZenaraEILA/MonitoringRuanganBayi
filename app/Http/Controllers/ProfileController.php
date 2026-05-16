@@ -36,10 +36,6 @@ class ProfileController extends Controller
 
     public function edit()
     {
-        if (!Auth::user()->isAdmin()) {
-            return redirect()->route('profile.show')->with('error', 'Hanya Admin yang dapat mengubah profil.');
-        }
-
         $user = Auth::user();
 
         return view('profile.edit', compact('user'));
@@ -47,10 +43,6 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        if (!Auth::user()->isAdmin()) {
-            return redirect()->route('profile.show')->with('error', 'Hanya Admin yang dapat mengubah profil.');
-        }
-
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -67,19 +59,11 @@ class ProfileController extends Controller
 
     public function editPassword()
     {
-        if (!Auth::user()->isAdmin()) {
-            return redirect()->route('profile.show')->with('error', 'Hanya Admin yang dapat mengubah password.');
-        }
-
         return view('profile.edit-password');
     }
 
     public function updatePassword(Request $request)
     {
-        if (!Auth::user()->isAdmin()) {
-            return redirect()->route('profile.show')->with('error', 'Hanya Admin yang dapat mengubah password.');
-        }
-
         $validated = $request->validate([
             'current_password' => 'required|current_password',
             'password' => 'required|string|min:8|confirmed',
@@ -100,10 +84,6 @@ class ProfileController extends Controller
 
     public function uploadPhoto(Request $request)
     {
-        if (!Auth::user()->isAdmin()) {
-            return redirect()->route('profile.show')->with('error', 'Hanya Admin yang dapat mengupload foto.');
-        }
-
         $validated = $request->validate([
             'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp,bmp,svg,tiff|max:5120',
         ], [
@@ -134,10 +114,6 @@ class ProfileController extends Controller
 
     public function deletePhoto()
     {
-        if (!Auth::user()->isAdmin()) {
-            return redirect()->route('profile.show')->with('error', 'Hanya Admin yang dapat menghapus foto.');
-        }
-
         $user = Auth::user();
 
         if ($user->profile_photo_path) {
