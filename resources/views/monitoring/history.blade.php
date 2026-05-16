@@ -71,7 +71,185 @@
     </div>
 </div>
 
-<!-- Ringkasan Kondisi Per Jam -->
+
+<!-- Grafik Suhu & Kelembapan -->
+<div class="card mb-4 border-0 shadow-sm rounded-4">
+    <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+            <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-chart-area text-primary me-2"></i> Grafik Rata-rata Suhu & Kelembapan</h5>
+            <div class="d-flex align-items-center gap-2">
+                <label class="form-label fw-semibold text-muted small mb-0">Interval:</label>
+                <select id="chartInterval" class="form-select form-select-sm border-0 bg-light" style="width:auto;min-width:140px;cursor:pointer;">
+                    <option value="15">Tiap 15 Detik</option>
+                    <option value="60" selected>Tiap 1 Menit</option>
+                    <option value="300">Tiap 5 Menit</option>
+                    <option value="900">Tiap 15 Menit</option>
+                    <option value="1800">Tiap 30 Menit</option>
+                    <option value="3600">Tiap 1 Jam</option>
+                    <option value="21600">Tiap 6 Jam</option>
+                    <option value="43200">Tiap 12 Jam</option>
+                    <option value="86400">Tiap 1 Hari</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div id="chartEmpty" class="text-center py-5" style="display:none;">
+            <i class="fas fa-chart-area fa-3x text-muted opacity-25 mb-3"></i>
+            <p class="text-muted">Tidak ada data untuk ditampilkan dalam rentang ini</p>
+        </div>
+        <div class="chart-container" style="position:relative;height:320px;" id="chartWrapper">
+            <canvas id="historyChart"></canvas>
+        </div>
+        <div class="d-flex gap-4 justify-content-center mt-3">
+            <div class="d-flex align-items-center gap-2"><span style="width:14px;height:14px;border-radius:3px;background:#ef4444;display:inline-block;"></span><small class="text-muted fw-semibold">Suhu (°C)</small></div>
+            <div class="d-flex align-items-center gap-2"><span style="width:14px;height:14px;border-radius:3px;background:#3b82f6;display:inline-block;"></span><small class="text-muted fw-semibold">Kelembapan (%)</small></div>
+        </div>
+    </div>
+</div>
+
+<script>
+@php
+$chartData = $monitorings->map(function($m) {
+    return [
+        'ts'   => $m->recorded_at->timestamp,
+        'temp' => (float) $m->temperature,
+        'hum'  => (float) $m->humidity,
+        'label'=> $m->recorded_at->format('d/m H:i:s'),
+    ];
+})->sortBy('ts')->values();
+@endphp
+const rawData = @json($chartData);
+
+let historyChart = null;
+
+function buildChartData(intervalSeconds) {
+    if (!rawData || rawData.length === 0) return null;
+
+    // Group data into buckets based on interval
+    const buckets = {};
+    rawData.forEach(d => {
+        const bucketKey = Math.floor(d.ts / intervalSeconds) * intervalSeconds;
+        if (!buckets[bucketKey]) buckets[bucketKey] = { temps: [], hums: [], ts: bucketKey };
+        buckets[bucketKey].temps.push(d.temp);
+        buckets[bucketKey].hums.push(d.hum);
+    });
+
+    const sorted = Object.values(buckets).sort((a, b) => a.ts - b.ts);
+
+    const labels = sorted.map(b => {
+        const d = new Date(b.ts * 1000);
+        if (intervalSeconds >= 86400) return d.toLocaleDateString('id-ID', {day:'2-digit',month:'short'});
+        if (intervalSeconds >= 3600)  return d.toLocaleDateString('id-ID', {day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+        return d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second: intervalSeconds < 60 ? '2-digit' : undefined});
+    });
+
+    const avg = arr => parseFloat((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2));
+    const temps = sorted.map(b => avg(b.temps));
+    const hums  = sorted.map(b => avg(b.hums));
+
+    return { labels, temps, hums, count: sorted.length };
+}
+
+function renderChart(intervalSeconds) {
+    const data = buildChartData(intervalSeconds);
+
+    if (!data || data.count === 0) {
+        document.getElementById('chartWrapper').style.display = 'none';
+        document.getElementById('chartEmpty').style.display   = 'block';
+        return;
+    }
+
+    document.getElementById('chartWrapper').style.display = 'block';
+    document.getElementById('chartEmpty').style.display   = 'none';
+
+    if (historyChart) historyChart.destroy();
+
+    const ctx = document.getElementById('historyChart').getContext('2d');
+    historyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: 'Rata-rata Suhu (°C)',
+                    data: data.temps,
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239,68,68,0.08)',
+                    borderWidth: 2,
+                    pointRadius: data.count > 60 ? 0 : 3,
+                    pointHoverRadius: 5,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'yTemp',
+                },
+                {
+                    label: 'Rata-rata Kelembapan (%)',
+                    data: data.hums,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59,130,246,0.08)',
+                    borderWidth: 2,
+                    pointRadius: data.count > 60 ? 0 : 3,
+                    pointHoverRadius: 5,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'yHum',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        maxTicksLimit: 12,
+                        maxRotation: 45,
+                        font: { size: 11 }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.04)' }
+                },
+                yTemp: {
+                    type: 'linear',
+                    position: 'left',
+                    title: { display: true, text: 'Suhu (°C)', color: '#ef4444', font: { size: 11 } },
+                    ticks: { color: '#ef4444', font: { size: 11 } },
+                    grid: { color: 'rgba(0,0,0,0.04)' },
+                    // Safe range lines
+                    min: Math.min(...data.temps) - 2,
+                },
+                yHum: {
+                    type: 'linear',
+                    position: 'right',
+                    title: { display: true, text: 'Kelembapan (%)', color: '#3b82f6', font: { size: 11 } },
+                    ticks: { color: '#3b82f6', font: { size: 11 } },
+                    grid: { drawOnChartArea: false },
+                }
+            }
+        }
+    });
+}
+
+// Init chart on load
+document.addEventListener('DOMContentLoaded', function () {
+    renderChart(parseInt(document.getElementById('chartInterval').value));
+
+    document.getElementById('chartInterval').addEventListener('change', function () {
+        renderChart(parseInt(this.value));
+    });
+});
+</script>
+
+
 <div class="card mb-4 border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4">
         <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-clock text-primary me-2"></i> Ringkasan Kondisi Per Jam</h5>
