@@ -75,6 +75,37 @@
                         </div>
 
                         <hr class="my-4">
+                        <h6 class="mb-3 text-primary"><i class="fas fa-info-circle"></i> Pengaturan "Tentang Kami" (Tim Pengembang)</h6>
+                        
+                        <div class="mb-3">
+                            <div class="form-check form-switch p-0" style="padding-left: 2.5rem !important;">
+                                <input class="form-check-input" type="checkbox" id="is_on_about_page" name="is_on_about_page" value="1" {{ old('is_on_about_page', $user->is_on_about_page) ? 'checked' : '' }}>
+                                <label class="form-check-label fw-bold" for="is_on_about_page">Pin ke Halaman Tentang Kami</label>
+                                <div class="form-text">Jika aktif, profil user ini akan muncul di daftar tim pengembang.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="job_title" class="form-label">Jabatan / Peran di Tim</label>
+                            <input type="text" class="form-control" id="job_title" name="job_title" value="{{ old('job_title', $user->job_title) }}" placeholder="Contoh: Full Stack Developer">
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="dob" class="form-label">Tanggal Lahir</label>
+                                <input type="date" class="form-control" id="dob" name="dob" value="{{ old('dob', $user->dob) }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label">Jenis Kelamin</label>
+                                <select name="gender" id="gender" class="form-select">
+                                    <option value="">-- Pilih Jenis Kelamin --</option>
+                                    <option value="Laki-laki" {{ old('gender', $user->gender) == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ old('gender', $user->gender) == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
 
                         <h6 class="mb-3"><i class="fas fa-lock"></i> Ubah Password (Kosongkan jika tidak ingin diganti)</h6>
 

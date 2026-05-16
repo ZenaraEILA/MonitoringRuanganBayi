@@ -47,171 +47,79 @@
                     <p class="text-muted mb-5">Sistem ini dikembangkan oleh tim ahli kami:</p>
                     <div class="row justify-content-center g-4">
                         @php
-                            // Data tim statis (Metadata)
-                            $teamData = [
-                                [
-                                    'name' => 'Aisatu Sa\'baniyah',
-                                    'gender' => 'Perempuan',
-                                    'dob' => '14 Agustus 2007',
-                                    'age' => 18,
-                                    'role' => 'Maket Desain & Project Secretary',
-                                    'phone' => '+62 8810-3642-9035',
-                                    'email' => 'aisatu@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Aisyah Nur R',
-                                    'gender' => 'Perempuan',
-                                    'dob' => 'Agustus 2008',
-                                    'age' => 17,
-                                    'role' => 'Desain Maket, Project Secretary & Web Designer',
-                                    'phone' => '+62 812-3333-4444',
-                                    'email' => 'aisyah@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Aisyiah Rizkika',
-                                    'gender' => 'Perempuan',
-                                    'dob' => '02 Mei 2008',
-                                    'age' => 18,
-                                    'role' => 'Desain Maket & Web Designer',
-                                    'phone' => '+62 812-5555-6666',
-                                    'email' => 'aisyiah@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Angga Dwi S',
-                                    'gender' => 'Laki-laki',
-                                    'dob' => '14 Mei 2007',
-                                    'age' => 19,
-                                    'role' => 'Team Leader & Desain Maket',
-                                    'phone' => '+62 812-7777-8888',
-                                    'email' => 'angga@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Arfan Restu R',
-                                    'gender' => 'Laki-laki',
-                                    'dob' => '15 Agustus 2007',
-                                    'age' => 18,
-                                    'role' => 'Desain Maket & Full Stack Developer',
-                                    'phone' => '+62 812-9999-0000',
-                                    'email' => 'arfan@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Ario Ilham K',
-                                    'gender' => 'Laki-laki',
-                                    'dob' => '22 November 2007',
-                                    'age' => 18,
-                                    'role' => 'Desain Maket, IoT & Web Developer',
-                                    'phone' => '+62 813-1111-2222',
-                                    'email' => 'ario@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Azzahra Khayla R',
-                                    'gender' => 'Perempuan',
-                                    'dob' => '26 September 2007',
-                                    'age' => 18,
-                                    'role' => 'Desain Maket & Project Secretary',
-                                    'phone' => '+62 813-5769-9710',
-                                    'email' => 'azzahra@monitoring.local'
-                                ],
-                                [
-                                    'name' => 'Calista Andra F',
-                                    'gender' => 'Perempuan',
-                                    'dob' => '14 Oktober 2007',
-                                    'age' => 18,
-                                    'role' => 'Desain Maket & Mockup Specialist',
-                                    'phone' => '+62 813-5555-6666',
-                                    'email' => 'calista@monitoring.local'
-                                ]
-                            ];
-
-                            // Ambil data user dari database untuk foto (jika ada)
+                            // Ambil data user yang di-pin oleh admin ke halaman About Us
                             try {
-                                $allUsers = \App\Models\User::select('email', 'profile_photo_path')->get();
+                                $teamMembers = \App\Models\User::where('is_on_about_page', true)
+                                    ->orderBy('name', 'asc')
+                                    ->get();
                             } catch (\Throwable $e) {
-                                $allUsers = collect();
-                            }
-
-                            // Proses mapping final
-                            $students = [];
-                            foreach ($teamData as $member) {
-                                // Pencocokan yang cerdas (Cari yang punya foto dulu)
-                                $dbUser = $allUsers->filter(function($u) use ($member) {
-                                    $emailMatch = strtolower(trim($u->email)) === strtolower(trim($member['email']));
-                                    
-                                    // Bersihkan nama untuk pencocokan
-                                    $cleanDbName = strtolower(str_replace(["'", "’"], "", $u->name));
-                                    $cleanMemberName = strtolower(str_replace(["'", "’"], "", $member['name']));
-                                    $nameMatch = $cleanDbName === $cleanMemberName;
-                                    
-                                    // Kriteria: Email/Nama cocok DAN punya foto
-                                    return ($emailMatch || $nameMatch) && !empty($u->profile_photo_path);
-                                })->first();
-
-                                // Jika tidak ada yang punya foto, cari user mana saja yang cocok (fallback)
-                                if (!$dbUser) {
-                                    $dbUser = $allUsers->first(function($u) use ($member) {
-                                        $emailMatch = strtolower(trim($u->email)) === strtolower(trim($member['email']));
-                                        $cleanDbName = strtolower(str_replace(["'", "’"], "", $u->name));
-                                        $cleanMemberName = strtolower(str_replace(["'", "’"], "", $member['name']));
-                                        return $emailMatch || ($cleanDbName === $cleanMemberName);
-                                    });
-                                }
-                                
-                                if ($dbUser && $dbUser->profile_photo_path) {
-                                    $path = $dbUser->profile_photo_path;
-                                    // Gunakan path relatif agar lebih aman terhadap perubahan domain
-                                    $member['image'] = "/storage/" . ltrim($path, '/');
-                                } else {
-                                    $cleanName = str_replace(["'", "’"], "", $member['name']);
-                                    $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($cleanName) . "&background=0d6efd&color=fff";
-                                }
-                                $students[] = $member;
+                                $teamMembers = collect();
                             }
                         @endphp
-                        @foreach($students as $student)
+
+                        @forelse($teamMembers as $member)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="card h-100 border-0 shadow-sm hover-lift bg-white rounded-4 overflow-hidden">
                                 <div class="bg-primary bg-gradient py-1"></div>
                                 <div class="card-body p-4 text-start">
                                     <div class="text-center mb-4">
                                         <div class="position-relative d-inline-block">
-                                            <img src="{{ $student['image'] }}" alt="{{ $student['name'] }}" class="rounded-circle shadow-sm border border-2 border-white mb-3" width="80" height="80" style="object-fit: cover;">
+                                            @php
+                                                if ($member->profile_photo_path) {
+                                                    $imagePath = "/storage/" . ltrim($member->profile_photo_path, '/');
+                                                } else {
+                                                    $cleanName = str_replace(["'", "’"], "", $member->name);
+                                                    $imagePath = "https://ui-avatars.com/api/?name=" . urlencode($cleanName) . "&background=0d6efd&color=fff";
+                                                }
+                                            @endphp
+                                            <img src="{{ $imagePath }}" alt="{{ $member->name }}" class="rounded-circle shadow-sm border border-2 border-white mb-3" width="80" height="80" style="object-fit: cover;">
                                             <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" title="Aktif"></span>
                                         </div>
-                                        <h6 class="fw-bold mb-1 text-dark">{{ $student['name'] }}</h6>
+                                        <h6 class="fw-bold mb-1 text-dark">{{ $member->name }}</h6>
                                         <div class="badge bg-soft-primary text-primary rounded-pill px-3 py-1 mb-2" style="font-size: 0.65rem; white-space: normal; line-height: 1.4;">
-                                            {{ $student['role'] }}
+                                            {{ $member->job_title ?? 'Developer' }}
                                         </div>
                                     </div>
                                     <div class="pt-2">
                                         <div class="d-flex align-items-center mb-2">
                                             <div class="icon-shape icon-xs bg-light rounded-circle me-3">
-                                                <i class="fas {{ $student['gender'] == 'Laki-laki' ? 'fa-mars text-info' : 'fa-venus text-danger' }} fa-fw"></i>
+                                                <i class="fas {{ $member->gender == 'Laki-laki' ? 'fa-mars text-info' : 'fa-venus text-danger' }} fa-fw"></i>
                                             </div>
-                                            <span class="small text-muted">{{ $student['gender'] }}</span>
+                                            <span class="small text-muted">{{ $member->gender ?? '-' }}</span>
                                         </div>
                                         <div class="d-flex align-items-center mb-2">
                                             <div class="icon-shape icon-xs bg-light rounded-circle me-3">
                                                 <i class="fas fa-calendar-alt fa-fw text-secondary"></i>
                                             </div>
-                                            <span class="small text-muted">{{ $student['dob'] }} ({{ $student['age'] }} thn)</span>
+                                            <span class="small text-muted">
+                                                {{ $member->dob ? \Carbon\Carbon::parse($member->dob)->locale('id')->isoFormat('D MMMM YYYY') : '-' }}
+                                                @if($member->dob)
+                                                    ({{ \Carbon\Carbon::parse($member->dob)->age }} thn)
+                                                @endif
+                                            </span>
                                         </div>
                                         <div class="d-flex align-items-center mb-2">
                                             <div class="icon-shape icon-xs bg-light rounded-circle me-3">
                                                 <i class="fas fa-phone-alt fa-fw text-success"></i>
                                             </div>
-                                            <span class="small text-muted">{{ $student['phone'] }}</span>
+                                            <span class="small text-muted">{{ $member->phone ?? '-' }}</span>
                                         </div>
                                         <div class="d-flex align-items-center">
                                             <div class="icon-shape icon-xs bg-light rounded-circle me-3">
                                                 <i class="fas fa-envelope fa-fw text-warning"></i>
                                             </div>
-                                            <span class="small text-muted" style="word-break: break-all;">{{ $student['email'] }}</span>
+                                            <span class="small text-muted" style="word-break: break-all;">{{ $member->email }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @endforeach
+                        @empty
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Belum ada tim yang di-pin oleh Admin.</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>

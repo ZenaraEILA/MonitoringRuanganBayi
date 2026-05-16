@@ -21,21 +21,77 @@ class UserSeeder extends Seeder
                 'name' => 'Admin',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
+                'job_title' => 'System Administrator',
+                'is_on_about_page' => false,
             ]
         );
 
-
-
-        // Data Teman-Teman
+        // Data Tim Pengembang (Berdasarkan data terbaru dari user)
         $friends = [
-            ['name' => 'Aisatu Sa’baniyah', 'absen' => '03', 'username' => 'aisatu'],
-            ['name' => 'Aisyah Nur R', 'absen' => '04', 'username' => 'aisyah'],
-            ['name' => 'Aisyiah Rizkika', 'absen' => '05', 'username' => 'aisyiah'],
-            ['name' => 'Angga Dwi S', 'absen' => '11', 'username' => 'angga'],
-            ['name' => 'Arfan Restu R', 'absen' => '12', 'username' => 'arfan'],
-            ['name' => 'Ario Ilham K', 'absen' => '13', 'username' => 'ario'],
-            ['name' => 'Azzahra Khayla R', 'absen' => '16', 'username' => 'azzahra'],
-            ['name' => 'Calista Andra f', 'absen' => '21', 'username' => 'calista'],
+            [
+                'name' => 'Aisatu Sa’baniyah', 
+                'username' => 'aisatu', 
+                'job_title' => 'Maket Desain & Project Secretary',
+                'dob' => '2007-08-14',
+                'gender' => 'Perempuan',
+                'phone' => '+62 8810-3642-9035'
+            ],
+            [
+                'name' => 'Aisyah Nur R', 
+                'username' => 'aisyah', 
+                'job_title' => 'Desain Maket, Project Secretary & Web Designer',
+                'dob' => '2008-08-01',
+                'gender' => 'Perempuan',
+                'phone' => '+62 812-3333-4444'
+            ],
+            [
+                'name' => 'Aisyiah Rizkika', 
+                'username' => 'aisyiah', 
+                'job_title' => 'Desain Maket & Web Designer',
+                'dob' => '2008-05-02',
+                'gender' => 'Perempuan',
+                'phone' => '+62 812-5555-6666'
+            ],
+            [
+                'name' => 'Angga Dwi S', 
+                'username' => 'angga', 
+                'job_title' => 'Team Leader & Desain Maket',
+                'dob' => '2007-05-14',
+                'gender' => 'Laki-laki',
+                'phone' => '+62 812-7777-8888'
+            ],
+            [
+                'name' => 'Arfan Restu R', 
+                'username' => 'arfan', 
+                'job_title' => 'Desain Maket & Full Stack Developer',
+                'dob' => '2007-08-15',
+                'gender' => 'Laki-laki',
+                'phone' => '+62 812-9999-0000'
+            ],
+            [
+                'name' => 'Ario Ilham K', 
+                'username' => 'ario', 
+                'job_title' => 'Desain Maket, IoT & Web Developer',
+                'dob' => '2007-11-22',
+                'gender' => 'Laki-laki',
+                'phone' => '+62 813-1111-2222'
+            ],
+            [
+                'name' => 'Azzahra Khayla R', 
+                'username' => 'azzahra', 
+                'job_title' => 'Desain Maket & Project Secretary',
+                'dob' => '2007-09-26',
+                'gender' => 'Perempuan',
+                'phone' => '+62 813-5769-9710'
+            ],
+            [
+                'name' => 'Calista Andra f', 
+                'username' => 'calista', 
+                'job_title' => 'Desain Maket & Mockup Specialist',
+                'dob' => '2007-10-14',
+                'gender' => 'Perempuan',
+                'phone' => '+62 813-5555-6666'
+            ],
         ];
 
         foreach ($friends as $friend) {
@@ -47,7 +103,11 @@ class UserSeeder extends Seeder
                     'username' => $friend['username'],
                     'password' => Hash::make('password123'),
                     'role' => 'petugas',
-                    'hospital_id' => 'ABSEN-' . $friend['absen'],
+                    'job_title' => $friend['job_title'],
+                    'dob' => $friend['dob'],
+                    'gender' => $friend['gender'],
+                    'phone' => $friend['phone'],
+                    'is_on_about_page' => true, // Pin ke About Us page secara otomatis
                     'is_active' => true,
                 ]
             );

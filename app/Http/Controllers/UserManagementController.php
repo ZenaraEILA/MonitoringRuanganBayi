@@ -60,6 +60,10 @@ class UserManagementController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|in:admin,petugas,public',
+            'job_title' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'gender' => 'nullable|in:Laki-laki,Perempuan',
+            'is_on_about_page' => 'nullable|boolean',
         ]);
 
         $securityCode = \Illuminate\Support\Str::random(20);
@@ -71,6 +75,10 @@ class UserManagementController extends Controller
             'email' => $validated['email'],
             'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
             'role' => $validated['role'],
+            'job_title' => $request->job_title,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'is_on_about_page' => $request->has('is_on_about_page'),
             'security_code' => $securityCode,
             'is_active' => true,
         ]);
@@ -112,6 +120,10 @@ class UserManagementController extends Controller
             'hospital_id' => 'nullable|string|max:255|unique:users,hospital_id,' . $user->id,
             'role' => 'required|in:admin,petugas,public',
             'password' => 'nullable|string|min:8|confirmed',
+            'job_title' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'gender' => 'nullable|in:Laki-laki,Perempuan',
+            'is_on_about_page' => 'nullable|boolean',
         ]);
 
         $data = [
@@ -120,6 +132,10 @@ class UserManagementController extends Controller
             'email' => $validated['email'],
             'hospital_id' => $validated['hospital_id'],
             'role' => $validated['role'],
+            'job_title' => $request->job_title,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'is_on_about_page' => $request->has('is_on_about_page'),
         ];
 
         if (!empty($validated['password'])) {

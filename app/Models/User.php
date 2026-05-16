@@ -29,6 +29,10 @@ class User extends Authenticatable
         'last_login_at',
         'profile_photo_path',
         'role',
+        'job_title',
+        'dob',
+        'gender',
+        'is_on_about_page',
     ];
 
     /**
