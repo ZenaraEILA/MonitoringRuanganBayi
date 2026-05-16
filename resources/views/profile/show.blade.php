@@ -29,7 +29,7 @@
                     <div class="col-md-4 text-center">
                         <div class="profile-avatar mb-3" id="photoContainer">
                             @if ($user->profile_photo_path)
-                                <img src="{{ asset('storage/' . $user->profile_photo_path) }}" 
+                                <img src="/storage/{{ $user->profile_photo_path }}" 
                                      alt="Foto Profil" 
                                      class="rounded-circle" 
                                      style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #007bff;"

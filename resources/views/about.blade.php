@@ -147,9 +147,8 @@
                                 
                                 if ($dbUser && $dbUser->profile_photo_path) {
                                     $path = $dbUser->profile_photo_path;
-                                    // Bersihkan path jika ada double slash
-                                    $fullPath = str_replace('//', '/', 'storage/' . $path);
-                                    $member['image'] = asset($fullPath);
+                                    // Gunakan path relatif agar lebih aman terhadap perubahan domain
+                                    $member['image'] = "/storage/" . ltrim($path, '/');
                                 } else {
                                     $cleanName = str_replace(["'", "’"], "", $member['name']);
                                     $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($cleanName) . "&background=0d6efd&color=fff";

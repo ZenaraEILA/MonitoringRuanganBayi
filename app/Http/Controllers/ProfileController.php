@@ -108,6 +108,8 @@ class ProfileController extends Controller
         // Update user with photo path
         $user->update(['profile_photo_path' => $path]);
 
+        \Illuminate\Support\Facades\Log::info('User ' . $user->email . ' updated profile photo: ' . $path);
+
         return redirect()->route('profile.show')
             ->with('success', 'Foto profil berhasil diupload');
     }
@@ -124,6 +126,8 @@ class ProfileController extends Controller
 
             // Update user to remove photo path
             $user->update(['profile_photo_path' => null]);
+
+            \Illuminate\Support\Facades\Log::info('User ' . $user->email . ' deleted profile photo');
 
             return redirect()->route('profile.show')
                 ->with('success', 'Foto profil berhasil dihapus');
