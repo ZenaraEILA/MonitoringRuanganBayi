@@ -38,15 +38,15 @@ GET /admin/users
             </div>
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-md-2 mb-3">
             <div class="card bg-danger text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="card-text text-white-50">Admin</p>
-                            <h3 class="card-title">{{ $totalAdmins }}</h3>
+                            <p class="card-text text-white-50 small">Admin</p>
+                            <h4 class="card-title">{{ $totalAdmins }}</h4>
                         </div>
-                        <i class="fas fa-crown fa-3x opacity-25"></i>
+                        <i class="fas fa-crown fa-2x opacity-25"></i>
                     </div>
                 </div>
             </div>
@@ -54,11 +54,11 @@ GET /admin/users
 
         <div class="col-md-2 mb-3">
             <div class="card bg-secondary text-white">
-                <div class="card-body p-3">
+                <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="card-text text-white-50 mb-1 small">Petugas</p>
-                            <h4 class="card-title mb-0">{{ $totalPetugas }}</h4>
+                            <p class="card-text text-white-50 small">Petugas</p>
+                            <h4 class="card-title">{{ $totalPetugas }}</h4>
                         </div>
                         <i class="fas fa-user fa-2x opacity-25"></i>
                     </div>
@@ -68,11 +68,11 @@ GET /admin/users
 
         <div class="col-md-2 mb-3">
             <div class="card bg-info text-white">
-                <div class="card-body p-3">
+                <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="card-text text-white-50 mb-1 small">Publik</p>
-                            <h4 class="card-title mb-0">{{ $totalPublic }}</h4>
+                            <p class="card-text text-white-50 small">Publik</p>
+                            <h4 class="card-title">{{ $totalPublic }}</h4>
                         </div>
                         <i class="fas fa-eye fa-2x opacity-25"></i>
                     </div>
@@ -123,115 +123,237 @@ GET /admin/users
     @endif
 
     <!-- Users Table -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-light">
-            <h5 class="mb-0">
-                <i class="fas fa-list"></i> Daftar User
-            </h5>
-        </div>
+    <form action="{{ route('admin.users.bulkDelete') }}" method="POST" id="bulkDeleteForm">
+        @csrf
+        <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-list text-primary me-2"></i> Daftar User
+                </h5>
+                <div id="bulkActions" style="display: none;">
+                    <span class="text-muted me-3 small" id="selectedCount">0 terpilih</span>
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus permanen semua user yang dipilih?')">
+                        <i class="fas fa-trash-alt me-1"></i> Hapus Terpilih
+                    </button>
+                </div>
+            </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 50px;">No</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Login Terakhir</th>
-                        <th style="width: 100px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($users as $index => $user)
-                    <tr>
-                        <td>
-                            <span class="badge bg-light text-dark">
-                                {{ $users->firstItem() + $index }}
-                            </span>
-                        </td>
-                        <td>
-                            <strong>{{ $user->name }}</strong>
-                        </td>
-                        <td>
-                            <code>{{ $user->email }}</code>
-                        </td>
-                        <td>
-                            @if($user->role === 'admin')
-                                <span class="badge bg-danger">
-                                    <i class="fas fa-crown"></i> Admin
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 40px;" class="text-center">
+                                <div class="form-check m-0 d-inline-block">
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                </div>
+                            </th>
+                            <th style="width: 50px;">No</th>
+                            <th>Info User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Login Terakhir</th>
+                            <th style="width: 150px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($users as $index => $user)
+                        <tr>
+                            <td class="text-center">
+                                <div class="form-check m-0 d-inline-block">
+                                    <input class="form-check-input user-checkbox" type="checkbox" name="ids[]" value="{{ $user->id }}" 
+                                           {{ $user->id === auth()->id() ? 'disabled' : '' }}>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-muted small">
+                                    {{ $users->firstItem() + $index }}
                                 </span>
-                            @elseif($user->role === 'petugas')
-                                <span class="badge bg-secondary">
-                                    <i class="fas fa-user"></i> Petugas
-                                </span>
-                            @else
-                                <span class="badge bg-info">
-                                    <i class="fas fa-eye"></i> Publik
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($user->is_active)
-                                <span class="badge bg-success">
-                                    <i class="fas fa-check-circle"></i> Aktif
-                                </span>
-                            @else
-                                <span class="badge bg-danger">
-                                    <i class="fas fa-times-circle"></i> Nonaktif
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            <small class="text-muted">
-                                {{ $user->getLastLoginInfo() }}
-                            </small>
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <a href="{{ route('admin.users.show', $user) }}"
-                                   class="btn btn-sm btn-info text-white" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('admin.users.edit', $user) }}"
-                                   class="btn btn-sm btn-warning" title="Edit Profil">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">
-                            <i class="fas fa-inbox fa-2x mb-3"></i><br>
-                            Tidak ada user
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle-sm bg-primary text-white me-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 35px; height: 35px; font-size: 0.8rem;">
+                                        @if($user->profile_photo_path)
+                                            <img src="/storage/{{ $user->profile_photo_path }}" alt="" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                                        @else
+                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">{{ $user->name }}</div>
+                                        <small class="text-muted">Username: {{ $user->username ?? '-' }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <small><code>{{ $user->email }}</code></small>
+                            </td>
+                            <td>
+                                @if($user->role === 'admin')
+                                    <span class="badge bg-soft-danger text-danger border-danger">
+                                        <i class="fas fa-crown"></i> Admin
+                                    </span>
+                                @elseif($user->role === 'petugas')
+                                    <span class="badge bg-soft-primary text-primary border-primary">
+                                        <i class="fas fa-user"></i> Petugas
+                                    </span>
+                                @else
+                                    <span class="badge bg-soft-info text-info border-info">
+                                        <i class="fas fa-eye"></i> Publik
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($user->is_active)
+                                    <span class="text-success small fw-bold">
+                                        <i class="fas fa-check-circle"></i> Aktif
+                                    </span>
+                                @else
+                                    <span class="text-danger small fw-bold">
+                                        <i class="fas fa-times-circle"></i> Nonaktif
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ $user->getLastLoginInfo() }}
+                                </small>
+                            </td>
+                            <td>
+                                <div class="btn-group shadow-sm">
+                                    <a href="{{ route('admin.users.show', $user) }}"
+                                       class="btn btn-sm btn-white border" title="Lihat Detail">
+                                        <i class="fas fa-eye text-info"></i>
+                                    </a>
+                                    <a href="{{ route('admin.users.edit', $user) }}"
+                                       class="btn btn-sm btn-white border" title="Edit Profil">
+                                        <i class="fas fa-edit text-warning"></i>
+                                    </a>
+                                    @if($user->id !== auth()->id())
+                                    <button type="button" 
+                                            class="btn btn-sm btn-white border delete-user-btn" 
+                                            data-id="{{ $user->id }}" 
+                                            data-name="{{ $user->name }}"
+                                            title="Hapus User">
+                                        <i class="fas fa-trash text-danger"></i>
+                                    </button>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i><br>
+                                Tidak ada user yang ditemukan
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Pagination -->
-        <div class="card-footer bg-light">
-            {{ $users->links() }}
+            <!-- Pagination -->
+            <div class="card-footer bg-white border-top py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Menampilkan {{ $users->firstItem() }} - {{ $users->lastItem() }} dari {{ $users->total() }} user</small>
+                    <div>
+                        {{ $users->links() }}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
+<!-- Single Delete Form (Hidden) -->
+<form id="singleDeleteForm" method="POST" action="" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+    const bulkActions = document.getElementById('bulkActions');
+    const selectedCount = document.getElementById('selectedCount');
+    const deleteBtns = document.querySelectorAll('.delete-user-btn');
+    const singleDeleteForm = document.getElementById('singleDeleteForm');
+
+    // Handle Select All
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => {
+                if (!cb.disabled) cb.checked = this.checked;
+            });
+            updateBulkActions();
+        });
+    }
+
+    // Handle Individual Checkboxes
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkActions);
+    });
+
+    function updateBulkActions() {
+        const checkedCount = document.querySelectorAll('.user-checkbox:checked').length;
+        if (checkedCount > 0) {
+            bulkActions.style.display = 'flex';
+            selectedCount.textContent = `${checkedCount} terpilih`;
+        } else {
+            bulkActions.style.display = 'none';
+        }
+    }
+
+    // Handle Single Delete
+    deleteBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            
+            if (confirm(`Apakah Anda yakin ingin menghapus permanen akun '${name}'? Data tidak dapat dikembalikan.`)) {
+                singleDeleteForm.action = `/admin/users/${id}`;
+                singleDeleteForm.submit();
+            }
+        });
+    });
+});
+</script>
 @endsection
 
 @section('styles')
 <style>
+    .bg-soft-danger { background-color: rgba(220, 53, 69, 0.1); }
+    .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+    .bg-soft-info { background-color: rgba(13, 202, 240, 0.1); }
+    
+    .badge {
+        padding: 0.4rem 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        font-size: 0.7rem;
+    }
+    
     .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.02);
+    }
+    
+    .btn-white {
+        background-color: #fff;
+    }
+    
+    .btn-group .btn:hover {
         background-color: #f8f9fa;
-        cursor: pointer;
+        z-index: 2;
     }
 
-    .badge {
-        padding: 0.5rem 0.75rem;
-        font-weight: 500;
+    .form-check-input:checked {
+        background-color: #dc3545;
+        border-color: #dc3545;
     }
 </style>
 @endsection

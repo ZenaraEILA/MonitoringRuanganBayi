@@ -327,6 +327,88 @@ class UserManagementController extends Controller
     }
 
     /**
+     * Delete user account (Admin only)
+     */
+    public function destroy(User $user)
+    {
+        $currentUser = Auth::user();
+
+        // 🔐 Security: Cannot delete self
+        if ($user->id === $currentUser->id) {
+            return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
+        }
+
+        try {
+            $username = $user->name;
+            
+            // Delete profile photo if exists
+            if ($user->profile_photo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo_path);
+            }
+
+            $user->delete();
+
+            Log::warning('User account deleted', [
+                'deleted_by_id' => $currentUser->id,
+                'user_id' => $user->id,
+                'user_name' => $username,
+            ]);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', "Akun '{$username}' berhasil dihapus secara permanen.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus user: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Bulk delete users (Admin only)
+     */
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids');
+        
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Tidak ada user yang dipilih.');
+        }
+
+        $currentUser = Auth::user();
+        
+        // Remove current user ID from the list to prevent self-deletion
+        $ids = array_filter($ids, function($id) use ($currentUser) {
+            return (int)$id !== (int)$currentUser->id;
+        });
+
+        if (empty($ids)) {
+            return redirect()->back()->with('error', 'Hanya akun Anda yang terpilih, dan akun sendiri tidak bisa dihapus.');
+        }
+
+        try {
+            $usersToDelete = User::whereIn('id', $ids)->get();
+            $count = $usersToDelete->count();
+
+            foreach ($usersToDelete as $user) {
+                // Delete photos
+                if ($user->profile_photo_path) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo_path);
+                }
+                $user->delete();
+            }
+
+            Log::warning('Bulk user deletion performed', [
+                'deleted_by_id' => $currentUser->id,
+                'count' => $count,
+                'ids' => $ids
+            ]);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', "{$count} akun berhasil dihapus secara permanen.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus beberapa user.');
+        }
+    }
+
+    /**
      * Refresh Security Code (Admin only)
      */
     public function refreshSecurityCode(Request $request, User $user)

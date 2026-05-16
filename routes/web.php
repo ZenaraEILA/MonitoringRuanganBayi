@@ -141,6 +141,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/users/{user}/activate', [UserManagementController::class, 'activateUser'])->name('users.activate');
         Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/bulk-delete', [UserManagementController::class, 'bulkDelete'])->name('users.bulkDelete');
         Route::post('/users/{user}/refresh-code', [UserManagementController::class, 'refreshSecurityCode'])->name('users.refreshCode');
     });
 });
