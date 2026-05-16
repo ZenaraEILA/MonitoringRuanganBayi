@@ -16,6 +16,7 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\HelpController;
+use App\Models\User;
 
 /**
  * Auth Routes
@@ -39,9 +40,13 @@ Route::middleware(['auth'])->group(function () {
     
     // Tentang Kami
     Route::get('/tentang-kami', function() {
-        $users = \App\Models\User::all();
+        try {
+            $users = User::all();
+        } catch (\Exception $e) {
+            $users = collect();
+        }
         
-        $teamMembers = [
+        $teamData = [
             [
                 'name' => 'Aisatu Sa\'baniyah',
                 'gender' => 'Perempuan',
@@ -116,17 +121,20 @@ Route::middleware(['auth'])->group(function () {
             ]
         ];
 
-        $students = collect($teamMembers)->map(function($member) use ($users) {
-            $dbUser = $users->firstWhere('email', $member['email']);
+        $students = [];
+        foreach ($teamData as $member) {
+            $dbUser = $users->where('email', $member['email'])->first();
+            
             if ($dbUser && $dbUser->profile_photo_path) {
                 $member['image'] = asset('storage/' . $dbUser->profile_photo_path);
             } else {
-                $member['image'] = 'https://ui-avatars.com/api/?name=' . urlencode($member['name']) . '&background=0d6efd&color=fff';
+                $nameForAvatar = str_replace("'", "", $member['name']);
+                $member['image'] = "https://ui-avatars.com/api/?name=" . urlencode($nameForAvatar) . "&background=0d6efd&color=fff";
             }
-            return $member;
-        });
+            $students[] = $member;
+        }
 
-        return view('about', compact('students'));
+        return view('about', ['students' => $students]);
     })->name('about');
 
     // Profile Management
