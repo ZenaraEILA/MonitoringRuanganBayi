@@ -6,27 +6,42 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class UserManagementController extends Controller
 {
     /**
-     * ✅ Display list of all users
+     * ✅ Display list of all users (Admin only)
+     *
+     * GET /admin/users
+     * Menampilkan daftar semua user dengan pagination
      */
     public function index()
     {
         try {
-            $users = User::latest()->paginate(10);
-            return view('admin.users.index', compact('users'));
+            // Pagination: 15 users per halaman
+            $users = User::paginate(15);
+
+            return view('admin.users.index', [
+                'users' => $users,
+                'totalUsers' => User::count(),
+                'totalAdmins' => User::where('role', 'admin')->count(),
+                'totalPetugas' => User::where('role', 'petugas')->count(),
+                'totalPublic' => User::where('role', 'public')->count(),
+                'activeUsers' => User::where('is_active', true)->count(),
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Error viewing users list', [
+                'error' => $e->getMessage(),
+                'admin_id' => Auth::id(),
+            ]);
+
+            return redirect()->route('dashboard')
+                ->with('error', 'Terjadi kesalahan saat memuat data user');
         }
     }
 
     /**
-     * Show form to create new user
+     * Show form to create new user (Admin only)
      */
     public function create()
     {
@@ -34,43 +49,48 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Store new user
+     * Store new user (Admin only)
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'nullable|string|max:255|unique:users',
+            'hospital_id' => 'nullable|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|in:admin,petugas,public',
             'job_title' => 'nullable|string|max:255',
             'dob' => 'nullable|date',
             'gender' => 'nullable|in:Laki-laki,Perempuan',
+            'is_on_about_page' => 'nullable|boolean',
         ]);
 
-        $securityCode = Str::random(20);
+        $securityCode = \Illuminate\Support\Str::random(20);
 
         User::create([
             'name' => $validated['name'],
-            'username' => $validated['username'] ?? null,
-            'hospital_id' => $request->hospital_id,
+            'username' => $validated['username'],
+            'hospital_id' => $validated['hospital_id'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
             'role' => $validated['role'],
-            'job_title' => $validated['job_title'] ?? null,
-            'dob' => $validated['dob'] ?? null,
-            'gender' => $validated['gender'] ?? null,
+            'job_title' => $request->job_title,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
             'is_on_about_page' => $request->has('is_on_about_page'),
             'security_code' => $securityCode,
             'is_active' => true,
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User berhasil ditambahkan dengan Code Keamanan: ' . $securityCode);
     }
 
     /**
-     * Show user details
+     * ✅ Show user details (Admin only)
+     *
+     * GET /admin/users/{id}
      */
     public function show(User $user)
     {
@@ -81,7 +101,7 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Show form to edit user
+     * Show form to edit user (Admin only)
      */
     public function edit(User $user)
     {
@@ -89,7 +109,7 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Update user
+     * Update user (Admin only)
      */
     public function update(Request $request, User $user)
     {
@@ -97,15 +117,20 @@ class UserManagementController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'hospital_id' => 'nullable|string|max:255|unique:users,hospital_id,' . $user->id,
             'role' => 'required|in:admin,petugas,public',
             'password' => 'nullable|string|min:8|confirmed',
+            'job_title' => 'nullable|string|max:255',
+            'dob' => 'nullable|date',
+            'gender' => 'nullable|in:Laki-laki,Perempuan',
+            'is_on_about_page' => 'nullable|boolean',
         ]);
 
         $data = [
             'name' => $validated['name'],
             'username' => $validated['username'],
             'email' => $validated['email'],
-            'hospital_id' => $request->hospital_id,
+            'hospital_id' => $validated['hospital_id'],
             'role' => $validated['role'],
             'job_title' => $request->job_title,
             'dob' => $request->dob,
@@ -114,88 +139,209 @@ class UserManagementController extends Controller
         ];
 
         if (!empty($validated['password'])) {
-            $data['password'] = Hash::make($validated['password']);
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($validated['password']);
         }
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')->with('success', 'Akun berhasil diperbarui.');
+        return redirect()->route('admin.users.index')
+            ->with('success', "✅ Akun '{$user->username}' berhasil diperbarui.");
     }
 
     /**
-     * Delete user account
-     */
-    public function destroy(User $user)
-    {
-        if ($user->id === Auth::id()) {
-            return redirect()->back()->with('error', 'Tidak bisa menghapus diri sendiri.');
-        }
-
-        if ($user->profile_photo_path) {
-            Storage::disk('public')->delete($user->profile_photo_path);
-        }
-
-        $user->delete();
-
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
-    }
-
-    /**
-     * Bulk delete users
-     */
-    public function bulkDelete(Request $request)
-    {
-        $ids = $request->input('ids');
-        if (empty($ids)) return redirect()->back()->with('error', 'Pilih user terlebih dahulu.');
-
-        $ids = array_filter($ids, fn($id) => (int)$id !== (int)Auth::id());
-        $users = User::whereIn('id', $ids)->get();
-
-        foreach ($users as $user) {
-            if ($user->profile_photo_path) Storage::disk('public')->delete($user->profile_photo_path);
-            $user->delete();
-        }
-
-        return redirect()->route('admin.users.index')->with('success', count($ids) . ' akun dihapus.');
-    }
-
-    /**
-     * Update user role
+     * 🔐 Update user role (Admin only)
+     *
+     * POST /admin/users/{id}/update-role
+     * 
+     * Body requirement:
+     * {
+     *   "role": "admin" atau "petugas"
+     * }
+     * 
+     * Aturan:
+     * - Admin tidak bisa mengubah role dirinya sendiri
+     * - Hanya admin yang bisa mengubah role
+     * - Role hanya bisa admin atau petugas
      */
     public function updateRole(Request $request, User $user)
     {
-        $validated = $request->validate(['role' => 'required|in:admin,petugas,public']);
-        if ($user->id === Auth::id()) return redirect()->back()->with('error', 'Gagal.');
+        // 🔐 Validasi input
+        $validated = $request->validate([
+            'role' => ['required', 'string', 'in:admin,petugas,public'],
+        ], [
+            'role.required' => 'Role harus diisi',
+            'role.in' => 'Role hanya boleh admin, petugas, atau publik',
+        ]);
 
-        $user->updateRole($validated['role']);
-        return redirect()->back()->with('success', 'Role diperbarui.');
+        $currentUser = Auth::user();
+
+        // 🔐 Cek: Admin tidak bisa mengubah role dirinya sendiri
+        if ($user->id === $currentUser->id) {
+            Log::warning('Admin coba ubah role dirinya sendiri', [
+                'admin_id' => $currentUser->id,
+                'attempted_new_role' => $validated['role'],
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Anda tidak dapat mengubah role diri sendiri');
+        }
+
+        // 🔐 Cek: Hanya admin yang bisa update role
+        if (!$currentUser->canChangeRoleOf($user)) {
+            Log::warning('Unauthorized role change attempt', [
+                'user_id' => $currentUser->id,
+                'target_user_id' => $user->id,
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Anda tidak memiliki izin untuk mengubah role user');
+        }
+
+        try {
+            $oldRole = $user->role;
+            $newRole = $validated['role'];
+
+            // ✅ Update role menggunakan method (dengan validasi)
+            $user->updateRole($newRole);
+
+            // 📝 Log activity untuk audit trail
+            Log::info('User role berhasil diubah', [
+                'changed_by_id' => $currentUser->id,
+                'changed_by_name' => $currentUser->name,
+                'changed_by_email' => $currentUser->email,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'old_role' => $oldRole,
+                'new_role' => $newRole,
+                'timestamp' => now(),
+                'ip' => $request->ip(),
+            ]);
+
+            return redirect()->route('admin.users.show', $user)
+                ->with('success', "✅ Role user {$user->name} berhasil diubah dari {$oldRole} menjadi {$newRole}");
+        } catch (\InvalidArgumentException $e) {
+            return redirect()->back()
+                ->with('error', 'Error: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Error updating user role', [
+                'error' => $e->getMessage(),
+                'admin_id' => $currentUser->id,
+                'user_id' => $user->id,
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat mengubah role');
+        }
     }
 
     /**
-     * Deactivate user
+     * 🔐 Deactivate user (Admin only)
+     *
+     * POST /admin/users/{id}/deactivate
+     * Menonaktifkan akun user tanpa menghapusnya
      */
-    public function deactivateUser(User $user)
+    public function deactivateUser(Request $request, User $user)
     {
-        if ($user->id === Auth::id()) return redirect()->back()->with('error', 'Gagal.');
-        $user->deactivate();
-        return redirect()->back()->with('success', 'User dinonaktifkan.');
+        $currentUser = Auth::user();
+
+        // 🔐 Cek: Admin tidak bisa deactivate dirinya sendiri
+        if ($user->id === $currentUser->id) {
+            Log::warning('Admin coba deactivate akun dirinya sendiri', [
+                'admin_id' => $currentUser->id,
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Anda tidak dapat menonaktifkan akun diri sendiri');
+        }
+
+        // 🔐 Cek: Hanya admin
+        if (!$currentUser->canDeactivateUser($user)) {
+            return redirect()->back()
+                ->with('error', 'Anda tidak memiliki izin');
+        }
+
+        try {
+            $user->deactivate();
+
+            Log::warning('User account deactivated', [
+                'deactivated_by_id' => $currentUser->id,
+                'deactivated_by_email' => $currentUser->email,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'timestamp' => now(),
+                'ip' => $request->ip(),
+            ]);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', "✅ User {$user->email} berhasil dinonaktifkan");
+        } catch (\Exception $e) {
+            Log::error('Error deactivating user', [
+                'error' => $e->getMessage(),
+                'admin_id' => $currentUser->id,
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menonaktifkan user');
+        }
     }
 
     /**
-     * Activate user
+     * 🔐 Reactivate user (Admin only)
+     *
+     * POST /admin/users/{id}/activate
+     * Mengaktifkan kembali akun user yang sudah dinonaktifkan
      */
-    public function activateUser(User $user)
+    public function activateUser(Request $request, User $user)
     {
-        $user->activate();
-        return redirect()->back()->with('success', 'User diaktifkan.');
+        $currentUser = Auth::user();
+
+        // 🔐 Hanya admin
+        if (!$currentUser->isAdmin()) {
+            return redirect()->back()
+                ->with('error', 'Anda tidak memiliki izin');
+        }
+
+        try {
+            $user->activate();
+
+            Log::info('User account activated', [
+                'activated_by_id' => $currentUser->id,
+                'activated_by_email' => $currentUser->email,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'timestamp' => now(),
+                'ip' => $request->ip(),
+            ]);
+
+            return redirect()->route('admin.users.index')
+                ->with('success', "✅ User {$user->email} berhasil diaktifkan kembali");
+        } catch (\Exception $e) {
+            Log::error('Error activating user', [
+                'error' => $e->getMessage(),
+                'admin_id' => $currentUser->id,
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat mengaktifkan user');
+        }
     }
 
     /**
-     * Refresh Security Code
+     * Refresh Security Code (Admin only)
      */
-    public function refreshSecurityCode(User $user)
+    public function refreshSecurityCode(Request $request, User $user)
     {
-        $user->update(['security_code' => Str::random(20)]);
-        return redirect()->back()->with('success', 'Code diperbarui.');
+        $currentUser = Auth::user();
+
+        // 🔐 Hanya admin
+        if (!$currentUser->isAdmin()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin');
+        }
+
+        $securityCode = \Illuminate\Support\Str::random(20);
+        $user->update(['security_code' => $securityCode]);
+
+        return redirect()->back()
+            ->with('success', 'Code Keamanan untuk ' . $user->name . ' berhasil diperbarui menjadi: ' . $securityCode);
     }
 }
