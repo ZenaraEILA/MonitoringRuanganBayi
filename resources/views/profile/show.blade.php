@@ -29,10 +29,14 @@
                     <div class="col-md-4 text-center">
                         <div class="profile-avatar mb-3" id="photoContainer">
                             @if ($user->profile_photo_path)
-                                <img src="{{ Storage::url($user->profile_photo_path) }}" 
+                                <img src="{{ asset('storage/' . $user->profile_photo_path) }}" 
                                      alt="Foto Profil" 
                                      class="rounded-circle" 
-                                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #007bff;">
+                                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #007bff;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="avatar-circle bg-primary text-white" style="width: 120px; height: 120px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto;">
+                                    <i class="fas fa-user"></i>
+                                </div>
                             @else
                                 <div class="avatar-circle bg-primary text-white" style="width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto;">
                                     <i class="fas fa-user"></i>

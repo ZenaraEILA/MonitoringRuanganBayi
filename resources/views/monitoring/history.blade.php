@@ -26,24 +26,44 @@
         <form method="GET" action="{{ route('monitoring.history') }}" class="row g-3">
             <!-- Hidden device_id since only 1 room exists -->
             <input type="hidden" name="device_id" value="{{ $selectedDevice }}">
-            <div class="col-md-2">
-                <label for="start_date" class="form-label">Tanggal Mulai</label>
-                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ $startDate }}">
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-semibold text-muted small mb-1">Rentang Tanggal</label>
+                <div class="input-group">
+                    <input type="date" name="start_date" class="form-control px-2 text-center" style="font-size: 0.85rem;" value="{{ $startDate }}">
+                    <span class="input-group-text bg-light px-2 border-start-0 border-end-0" style="font-size: 0.85rem;">s/d</span>
+                    <input type="date" name="end_date" class="form-control px-2 text-center" style="font-size: 0.85rem;" value="{{ $endDate }}">
+                </div>
             </div>
-            <div class="col-md-2">
-                <label for="start_time" class="form-label">Jam Mulai</label>
-                <input type="time" name="start_time" id="start_time" class="form-control" value="{{ $startTime }}">
+
+            <div class="col-lg-3 col-md-6">
+                <label for="status" class="form-label fw-semibold text-muted small mb-1">Status/Tindakan</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="semua" {{ ($status ?? '') == 'semua' ? 'selected' : '' }}>Semua Kondisi</option>
+                    <option value="normal" {{ ($status ?? '') == 'normal' ? 'selected' : '' }}>Normal (Aman)</option>
+                    <option value="bahaya" {{ ($status ?? '') == 'bahaya' ? 'selected' : '' }}>Bahaya (Tidak Aman)</option>
+                    <option value="panas" {{ ($status ?? '') == 'panas' ? 'selected' : '' }}>Kondisi Panas (Suhu &ge; 31&deg;C)</option>
+                    <option value="dingin" {{ ($status ?? '') == 'dingin' ? 'selected' : '' }}>Kondisi Dingin (Suhu &le; 29&deg;C)</option>
+                </select>
             </div>
-            <div class="col-md-2">
-                <label for="end_date" class="form-label">Tanggal Akhir</label>
-                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ $endDate }}">
+
+            <div class="col-lg-2 col-md-4">
+                <label for="search_suhu" class="form-label fw-semibold text-muted small mb-1">Cari Suhu</label>
+                <div class="input-group">
+                    <input type="text" name="search_suhu" id="search_suhu" class="form-control" value="{{ $searchSuhu ?? '' }}" placeholder="26.5">
+                    <span class="input-group-text bg-light px-2" style="font-size: 0.85rem;">°C</span>
+                </div>
             </div>
-            <div class="col-md-2">
-                <label for="end_time" class="form-label">Jam Akhir</label>
-                <input type="time" name="end_time" id="end_time" class="form-control" value="{{ $endTime }}">
+
+            <div class="col-lg-3 col-md-4">
+                <label for="search_kelembapan" class="form-label fw-semibold text-muted small mb-1">Cari Kelembapan</label>
+                <div class="input-group">
+                    <input type="text" name="search_kelembapan" id="search_kelembapan" class="form-control" value="{{ $searchKelembapan ?? '' }}" placeholder="55.0">
+                    <span class="input-group-text bg-light px-2" style="font-size: 0.85rem;">%</span>
+                </div>
             </div>
-            <div class="col-md-1 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100" style="border-radius: 10px; padding: 10px 14px;">
+
+            <div class="col-lg-1 col-md-4 d-flex align-items-end mt-3 mt-lg-0">
+                <button type="submit" class="btn btn-primary w-100" style="border-radius: 8px; padding: 10px 14px;" title="Terapkan Filter">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
@@ -51,10 +71,60 @@
     </div>
 </div>
 
-<!-- Data Table -->
+<!-- Ringkasan Kondisi Per Jam -->
+<div class="card mb-4 border-0 shadow-sm rounded-4">
+    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4">
+        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-clock text-primary me-2"></i> Ringkasan Kondisi Per Jam</h5>
+    </div>
+    <div class="card-body px-0 pt-0">
+        <div class="table-responsive px-4" style="max-height: 350px; overflow-y: auto;">
+            <table class="table table-hover mb-0 table-sm">
+                <thead style="position: sticky; top: 0; background-color: #fff; z-index: 1;">
+                    <tr>
+                        <th>Tanggal & Jam</th>
+                        <th>Rata-rata Suhu</th>
+                        <th>Min - Max Suhu</th>
+                        <th>Rata-rata Kelembapan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($hourlySummaries as $summary)
+                    <tr>
+                        <td>
+                            <span class="fw-semibold">{{ \Carbon\Carbon::parse($summary->date)->format('d M Y') }}</span><br>
+                            <small class="text-muted">{{ str_pad($summary->hour, 2, '0', STR_PAD_LEFT) }}:00 - {{ str_pad($summary->hour, 2, '0', STR_PAD_LEFT) }}:59</small>
+                        </td>
+                        <td>
+                            <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
+                                {{ number_format($summary->avg_temp, 2) }} °C
+                            </span>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ number_format($summary->min_temp, 1) }} °C - {{ number_format($summary->max_temp, 1) }} °C</small>
+                        </td>
+                        <td>
+                            <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $summary->avg_humidity < 35 || $summary->avg_humidity > 60 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $summary->avg_humidity < 35 || $summary->avg_humidity > 60 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $summary->avg_humidity < 35 || $summary->avg_humidity > 60 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
+                                {{ number_format($summary->avg_humidity, 2) }} %
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center py-4">
+                            <p class="text-muted mb-0">Tidak ada ringkasan data</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Data Table Detail -->
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4">
-        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-table text-primary me-2"></i> Data Monitoring</h5>
+        <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-list text-primary me-2"></i> Log Monitoring Detail (Per 10 Detik)</h5>
     </div>
     <div class="card-body px-0 pt-0">
     <div class="table-responsive px-4">

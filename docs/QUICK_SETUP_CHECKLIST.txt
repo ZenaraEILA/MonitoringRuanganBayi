@@ -1,0 +1,67 @@
+# 🚀 RINGKASAN SETUP SERVER - UNTUK KIMY
+
+## 📋 Yang Perlu Dibuat:
+
+### ✅ AKUN LOGIN (3 buah)
+```
+1. Admin
+   - Username: admin
+   - Password: Admin123!@#
+   
+2. Petugas
+   - Username: petugas
+   - Password: Petugas123!@#
+   
+3. Dokter
+   - Username: doctor
+   - Password: Doctor123!@#
+```
+
+### ✅ DEVICE SENSOR (1 buah)
+```
+Device ID: DEVICE-BAYI-001
+Nama: Sensor Ruangan Bayi Unit 1
+Lokasi: Ruang Perawatan Bayi - Bed 1
+AC Set Point: 24°C (Range: 22-26°C)
+AC API URL: http://192.168.1.100/api/control
+AC API Key: key-ac-001-secret
+```
+
+---
+
+## 🔧 CARA SETUP:
+
+### OPSI 1: Pakai Laravel Seeder (RECOMMENDED)
+```bash
+cd /path/to/project
+php artisan migrate                          # Setup database structure
+php artisan db:seed --class=ProductionUserSeeder
+php artisan db:seed --class=ProductionDeviceSeeder
+```
+
+### OPSI 2: Manual SQL
+```bash
+mysql -u root -p database_name < SETUP_PRODUCTION_DATA.sql
+```
+
+---
+
+## ✔️ TEST AKSES:
+
+1. Buka aplikasi: http://server-ip/login
+2. Login dengan username: `admin` | password: `Admin123!@#`
+3. Harus masuk ke dashboard
+4. Test 2 user lain juga
+
+---
+
+## ⚠️ PENTING:
+
+- Password harus di-change setelah first login
+- Device ID harus UNIK (tidak boleh duplikasi)
+- AC API URL & Key harus sesuai dengan hardware AC Anda
+- Backup database sebelum jalankan script!
+
+---
+
+**File referensi lengkap ada di:** `docs/SERVER_SETUP_GUIDE_FOR_KIMY.md`

@@ -17,16 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => bcrypt('password'),
-            ]
-        );
+
 
         // Seed users (admin & petugas)
         $this->call(UserSeeder::class);
+
+        // Seed production users and devices (uncomment untuk production)
+        // $this->call(ProductionUserSeeder::class);
+        // $this->call(ProductionDeviceSeeder::class);
 
         // Seed dummy monitoring data
         $this->call(MonitoringSeeder::class);

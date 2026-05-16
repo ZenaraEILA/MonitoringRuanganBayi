@@ -1,0 +1,79 @@
+# QUICK FIX - Role Toggle Bug
+
+## 🔧 SOLUSI CEPAT (3 baris code)
+
+Edit file: **app/Models/User.php**
+
+**Baris yang perlu diubah: Line 17-27**
+
+**SEBELUM:**
+```php
+protected $fillable = [
+    'name',
+    'username',
+    'hospital_id',
+    'security_code',
+    'email',
+    'phone',
+    'password',
+    'is_active',
+    'last_login_at',
+    'profile_photo_path',
+];
+```
+
+**SESUDAH:**
+```php
+protected $fillable = [
+    'name',
+    'username',
+    'hospital_id',
+    'security_code',
+    'email',
+    'phone',
+    'password',
+    'is_active',
+    'last_login_at',
+    'profile_photo_path',
+    'role',  // ← TAMBAHKAN BARIS INI
+];
+```
+
+---
+
+## ✅ TESTING
+
+1. Login sebagai Admin
+2. Pergi ke: `/admin/users`
+3. Edit salah satu user
+4. Ubah role dari "petugas" → "admin"
+5. Click "Simpan Perubahan"
+6. **VERIFY**: Role di database harus berubah ✅
+
+---
+
+## 📚 DETAIL PENJELASAN
+
+Baca file: **docs/BUG_REPORT_ROLE_TOGGLE.md** untuk penjelasan lengkap mengapa bug terjadi dan solusi optimal.
+
+---
+
+## 🚀 FOR KIMY: COPY-PASTE READY
+
+```php
+    protected $fillable = [
+        'name',
+        'username',
+        'hospital_id',
+        'security_code',
+        'email',
+        'phone',
+        'password',
+        'is_active',
+        'last_login_at',
+        'profile_photo_path',
+        'role',
+    ];
+```
+
+Paste ke file: `app/Models/User.php` line 17-27. Done!

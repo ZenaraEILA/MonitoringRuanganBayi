@@ -36,6 +36,9 @@ Route::middleware(['auth'])->group(function () {
     // Help & Guide
     Route::get('/help', [HelpController::class, 'index'])->name('help.index')->middleware('staff');
     Route::get('/help/{section}', [HelpController::class, 'section'])->name('help.section')->middleware('staff');
+    
+    // Tentang Kami
+    Route::view('/tentang-kami', 'about')->name('about');
 
     // Profile Management
     Route::prefix('profile')->middleware('staff')->group(function () {
@@ -51,8 +54,6 @@ Route::middleware(['auth'])->group(function () {
     // Monitoring
     Route::prefix('monitoring')->middleware('staff')->group(function () {
         Route::get('/history', [MonitoringController::class, 'history'])->name('monitoring.history');
-        Route::get('/chart', [MonitoringController::class, 'chart'])->name('monitoring.chart');
-        Route::get('/hourly-trend', [MonitoringController::class, 'hourlyTrend'])->name('monitoring.hourly-trend');
         Route::post('/{id}/action', [MonitoringController::class, 'updateAction'])->name('monitoring.update-action')->middleware('staff');
         Route::get('/emergency-incidents', [MonitoringController::class, 'emergencyIncidents'])->name('monitoring.emergency-incidents');
     });

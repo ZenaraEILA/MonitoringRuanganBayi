@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', 'Sistem Monitoring Suhu & Kelembapan Ruang Bayi')</title>
     
-    <!-- Favicon Medical Icon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23ff6b6b;stop-opacity:1' /><stop offset='100%' style='stop-color:%234ecdc4;stop-opacity:1' /></linearGradient></defs><rect width='100' height='100' fill='white'/><g transform='translate(50,50)'><circle cx='0' cy='0' r='45' fill='url(%23grad1)' opacity='0.1' stroke='url(%23grad1)' stroke-width='2'/><path d='M -8,-25 L -8,5 C -8,10 -4,15 0,15 C 4,15 8,10 8,5 L 8,-25 C 8,-28 5,-30 0,-30 C -5,-30 -8,-28 -8,-25 Z' fill='%23ff6b6b'/><circle cx='0' cy='-22' r='3' fill='%23ff6b6b'/><path d='M -0.5,-8 L 0.5,-8 L 0.5,-2 C 0.5,0 -0.5,0 -0.5,-2 Z' fill='%23fff' opacity='0.6'/><path d='M 12,-10 Q 18,-15 20,-8 Q 18,0 12,5 Q 15,0 12,-10 Z' fill='%234ecdc4'/></g></svg>" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d6efd'/><path d='M50 75 C50 75 20 55 20 35 C20 24 28 17 38 17 C44 17 49 20 50 23 C51 20 56 17 62 17 C72 17 80 24 80 35 C80 55 50 75 50 75Z' fill='white'/><polyline points='30,47 37,47 41,38 46,56 51,43 55,47 62,47 70,47' fill='none' stroke='%230d6efd' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/></svg>" /> 
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -317,7 +316,7 @@
             left: 0;
             top: 66px; /* Adjusted for slightly taller navbar */
             bottom: 0;
-            width: 16.66%;
+            width: 260px;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 24px 16px;
@@ -336,6 +335,7 @@
             font-size: 0.95rem;
             display: flex;
             align-items: center;
+            white-space: nowrap;
         }
 
         .sidebar .nav-link i {
@@ -738,8 +738,9 @@
             animation: fadeIn 0.5s ease-out;
             
             /* CRITICAL: Margin-left untuk accommodate fixed sidebar */
-            margin-left: 16.66%;  /* Width col-md-2 (2/12 = 16.66%) */
+            margin-left: 260px;  /* Width sidebar fixed 260px */
             min-height: calc(100vh - 59px);  /* Full height minus navbar */
+            width: calc(100% - 260px);
         }
 
         /* Clock Display */
@@ -826,6 +827,7 @@
             .content-wrapper {
                 padding: 16px;
                 margin-left: 0 !important;  /* Reset margin untuk mobile */
+                width: 100% !important;     /* Reset width untuk mobile */
             }
             
             /* Hide sidebar pada mobile */
@@ -1052,22 +1054,18 @@
                             <i class="fas fa-history"></i> Riwayat
                         </a>
                     </li>
-                    <li class="nav-item d-md-none">
-                        <a class="nav-link {{ request()->routeIs('monitoring.chart') ? 'active' : '' }}" href="{{ route('monitoring.chart') }}">
-                            <i class="fas fa-chart-area"></i> Grafik
-                        </a>
-                    </li>
-                    <li class="nav-item d-md-none">
-                        <a class="nav-link {{ request()->routeIs('monitoring.hourly-trend') ? 'active' : '' }}" href="{{ route('monitoring.hourly-trend') }}">
-                            <i class="fas fa-chart-simple"></i> Data Harian
-                        </a>
-                    </li>
+
                     <li class="nav-item d-md-none">
                         <a class="nav-link {{ request()->routeIs('help*') ? 'active' : '' }}" href="{{ route('help.index') }}">
                             <i class="fas fa-question-circle"></i> Bantuan & Panduan
                         </a>
                     </li>
                     @endif
+                    <li class="nav-item d-md-none">
+                        <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">
+                            <i class="fas fa-info-circle"></i> Tentang Kami
+                        </a>
+                    </li>
                     @if(auth()->user()->role === 'admin')
                     <li class="nav-item d-md-none border-top mt-2 pt-2">
                         <span class="nav-link disabled text-muted small fw-bold text-uppercase">Admin Panel</span>
@@ -1204,16 +1202,7 @@
                                 <i class="fas fa-history"></i> Riwayat
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('monitoring.chart') ? 'active' : '' }}" href="{{ route('monitoring.chart') }}">
-                                <i class="fas fa-chart-area"></i> Grafik
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('monitoring.hourly-trend') ? 'active' : '' }}" href="{{ route('monitoring.hourly-trend') }}">
-                                <i class="fas fa-chart-simple"></i> Data Harian
-                            </a>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}" href="{{ route('reports.index') }}">
                                 <i class="fas fa-file-pdf"></i> Export PDF
@@ -1225,6 +1214,11 @@
                             </a>
                         </li>
                         @endif
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">
+                                <i class="fas fa-info-circle"></i> Tentang Kami
+                            </a>
+                        </li>
                         @if(auth()->user()->role === 'admin')
                         <li class="nav-item mt-3 mb-2 px-3">
                             <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">Admin Panel</span>
