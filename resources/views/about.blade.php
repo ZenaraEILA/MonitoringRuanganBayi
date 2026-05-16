@@ -133,17 +133,28 @@
                             // Proses mapping final
                             $students = [];
                             foreach ($teamData as $member) {
-                                // Pencocokan yang lebih tangguh (Email ATAU Nama)
-                                $dbUser = $allUsers->first(function($u) use ($member) {
+                                // Pencocokan yang cerdas (Cari yang punya foto dulu)
+                                $dbUser = $allUsers->filter(function($u) use ($member) {
                                     $emailMatch = strtolower(trim($u->email)) === strtolower(trim($member['email']));
                                     
-                                    // Bersihkan nama dari tanda kutip untuk pencocokan nama
+                                    // Bersihkan nama untuk pencocokan
                                     $cleanDbName = strtolower(str_replace(["'", "’"], "", $u->name));
                                     $cleanMemberName = strtolower(str_replace(["'", "’"], "", $member['name']));
                                     $nameMatch = $cleanDbName === $cleanMemberName;
                                     
-                                    return $emailMatch || $nameMatch;
-                                });
+                                    // Kriteria: Email/Nama cocok DAN punya foto
+                                    return ($emailMatch || $nameMatch) && !empty($u->profile_photo_path);
+                                })->first();
+
+                                // Jika tidak ada yang punya foto, cari user mana saja yang cocok (fallback)
+                                if (!$dbUser) {
+                                    $dbUser = $allUsers->first(function($u) use ($member) {
+                                        $emailMatch = strtolower(trim($u->email)) === strtolower(trim($member['email']));
+                                        $cleanDbName = strtolower(str_replace(["'", "’"], "", $u->name));
+                                        $cleanMemberName = strtolower(str_replace(["'", "’"], "", $member['name']));
+                                        return $emailMatch || ($cleanDbName === $cleanMemberName);
+                                    });
+                                }
                                 
                                 if ($dbUser && $dbUser->profile_photo_path) {
                                     $path = $dbUser->profile_photo_path;
