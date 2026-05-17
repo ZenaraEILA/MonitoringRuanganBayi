@@ -1129,6 +1129,79 @@
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
+
+        /* --- PROFESSIONAL GLOBAL TOAST ALERTS --- */
+        .global-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999; /* On top of everything */
+            min-width: 320px;
+            max-width: 450px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            backdrop-filter: blur(15px);
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 1 !important; /* Override standard fade in */
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .global-alert.alert-success {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 5px solid #2ed573;
+            color: #2f3542;
+        }
+
+        .global-alert.alert-danger {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 5px solid #ff4757;
+            color: #2f3542;
+        }
+
+        .global-alert i {
+            font-size: 24px;
+            margin-top: 2px;
+        }
+
+        .global-alert.alert-success i {
+            color: #2ed573;
+        }
+
+        .global-alert.alert-danger i {
+            color: #ff4757;
+        }
+
+        .global-alert .alert-content {
+            flex: 1;
+        }
+
+        .global-alert strong {
+            font-size: 1rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .global-alert .btn-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            filter: grayscale(1) opacity(0.5);
+        }
 </style>
     
 </head>
@@ -1150,14 +1223,20 @@
 
     <!-- ESP Connection Alerts (Global) -->
     <div id="espConnectedAlert" class="alert alert-success alert-dismissible fade show d-none global-alert" role="alert">
-        <i class="fas fa-check-circle me-2"></i> <strong id="espConnectedMessage">✅ Koneksi ESP Berhasil!</strong>
-        <p class="mb-0 mt-2" style="font-size: 0.85rem;">Sistem telah terhubung dan menerima data monitoring terbaru.</p>
+        <i class="fas fa-check-circle"></i>
+        <div class="alert-content">
+            <strong id="espConnectedMessage">Koneksi ESP Berhasil!</strong>
+            <p class="mb-0 mt-1" style="font-size: 0.85rem;">Sistem telah terhubung dan menerima data monitoring terbaru.</p>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     
     <div id="espDisconnectedAlert" class="alert alert-danger alert-dismissible fade show d-none global-alert" role="alert">
-        <i class="fas fa-exclamation-triangle me-2"></i> <strong id="espDisconnectedMessage">⚠️ ESP Putus Koneksi!</strong>
-        <p class="mb-0 mt-2" style="font-size: 0.85rem;">Perangkat tidak merespons. Periksa koneksi WiFi atau power supply.</p>
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="alert-content">
+            <strong id="espDisconnectedMessage">ESP Putus Koneksi!</strong>
+            <p class="mb-0 mt-1" style="font-size: 0.85rem;">Perangkat tidak merespons. Periksa koneksi WiFi atau power supply.</p>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     
