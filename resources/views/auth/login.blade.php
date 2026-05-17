@@ -132,6 +132,7 @@
             color: #2d3436;
             margin-bottom: 5px;
             letter-spacing: -0.5px;
+            transition: opacity 0.3s ease;
         }
 
         .login-header p {
@@ -610,7 +611,7 @@
                 <div class="logo-icon">
                     <i class="fas fa-heartbeat"></i>
                 </div>
-                <h1>Monitoring Bayi</h1>
+                <h1 id="rotatingTitle">Monitoring Bayi</h1>
                 <p>Sistem Monitoring Suhu & Kelembapan Ruang Perawatan</p>
             </div>
 
@@ -754,6 +755,27 @@
                     loader.classList.remove('hidden');
                 });
             }
+
+            // Rotating Title (Exclusive to Login Page)
+            const titleElement = document.getElementById('rotatingTitle');
+            const titles = ["Room Temp Baby", "Monitoring Suhu Bayi"];
+            let titleIndex = 0;
+            
+            setInterval(() => {
+                titleIndex = (titleIndex + 1) % titles.length;
+                
+                // Update Browser Tab Title
+                document.title = titles[titleIndex];
+                
+                // Update Page Header with fade effect
+                if (titleElement) {
+                    titleElement.style.opacity = 0;
+                    setTimeout(() => {
+                        titleElement.textContent = titles[titleIndex];
+                        titleElement.style.opacity = 1;
+                    }, 300);
+                }
+            }, 5000);
         });
 
         function switchIdentity() {
