@@ -76,10 +76,12 @@
                                             @php
                                                 $isOnline = false;
                                                 try {
-                                                    $isOnline = \DB::table('sessions')
-                                                        ->where('user_id', $member->id)
-                                                        ->where('last_activity', '>=', now()->subMinutes(5)->timestamp)
-                                                        ->exists();
+                                                    if (\Illuminate\Support\Facades\Schema::hasTable('sessions')) {
+                                                        $isOnline = \Illuminate\Support\Facades\DB::table('sessions')
+                                                            ->where('user_id', $member->id)
+                                                            ->where('last_activity', '>=', now()->subMinutes(5)->timestamp)
+                                                            ->exists();
+                                                    }
                                                 } catch (\Throwable $e) {
                                                     $isOnline = false;
                                                 }
