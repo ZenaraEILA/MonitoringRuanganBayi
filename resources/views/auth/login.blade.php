@@ -496,47 +496,82 @@
             pointer-events: none;
         }
 
-        .heart-container {
+        .hearts-loader {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .heart-item {
+            width: 25px;
+            height: 25px;
             position: relative;
-            width: 100px;
-            height: 100px;
-        }
-
-        .heart-shape {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
+            transform: rotate(-45deg);
             border-radius: 4px;
-            animation: heartBeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+            animation: heartPulse 1.2s infinite ease-in-out;
         }
 
-        .heart-shape:before,
-        .heart-shape:after {
+        .heart-item:before,
+        .heart-item:after {
             content: '';
-            width: 50px;
-            height: 50px;
-            background: inherit;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             position: absolute;
         }
 
-        .heart-shape:before {
-            top: -25px;
+        .heart-item:before {
+            top: -12.5px;
             left: 0;
         }
 
-        .heart-shape:after {
+        .heart-item:after {
             top: 0;
-            left: 25px;
+            left: 12.5px;
+        }
+
+        /* Colors */
+        .heart-item.blue {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        }
+        .heart-item.blue:before,
+        .heart-item.blue:after {
+            background: #0d6efd;
+        }
+
+        .heart-item.red {
+            background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+            animation-delay: 0.4s;
+        }
+        .heart-item.red:before,
+        .heart-item.red:after {
+            background: #dc3545;
+        }
+
+        .heart-item.green {
+            background: linear-gradient(135deg, #198754 0%, #116a42 100%);
+            animation-delay: 0.8s;
+        }
+        .heart-item.green:before,
+        .heart-item.green:after {
+            background: #198754;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% {
+                transform: rotate(-45deg) scale(0.8);
+                opacity: 0.4;
+            }
+            50% {
+                transform: rotate(-45deg) scale(1.2);
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            }
         }
 
         .loader-text {
-            margin-top: 30px;
+            margin-top: 40px;
             font-size: 16px;
             font-weight: 700;
             color: #2d3436;
@@ -545,43 +580,19 @@
             animation: pulseText 1.5s infinite;
         }
 
-        .medical-cross {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 20px;
-            z-index: 10;
-            animation: crossRotate 2.4s infinite linear;
-        }
-
-        @keyframes heartBeat {
-            0% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
-            5% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.9); }
-            10% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
-            15% { transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
-            50% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
-            100% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
-        }
-
         @keyframes pulseText {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
-        }
-
-        @keyframes crossRotate {
-            0%, 50% { transform: translate(-50%, -50%) rotate(0deg); }
-            75%, 100% { transform: translate(-50%, -50%) rotate(90deg); }
         }
     </style>
 </head>
 <body>
     <!-- Loader Overlay -->
     <div id="appLoader" class="loader-overlay">
-        <div class="heart-container">
-            <div class="heart-shape"></div>
-            <i class="fas fa-plus medical-cross"></i>
+        <div class="hearts-loader">
+            <div class="heart-item blue"></div>
+            <div class="heart-item red"></div>
+            <div class="heart-item green"></div>
         </div>
         <div class="loader-text">Memproses...</div>
     </div>
