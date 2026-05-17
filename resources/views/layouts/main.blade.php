@@ -1040,10 +1040,120 @@
             font-size: 12px;
         }
 
+        /* --- HEART LOADER ANIMATION --- */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .heart-shape {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            border-radius: 4px;
+            animation: heartBeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+        }
+
+        .heart-shape:before,
+        .heart-shape:after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            background: inherit;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart-shape:before {
+            top: -25px;
+            left: 0;
+        }
+
+        .heart-shape:after {
+            top: 0;
+            left: 25px;
+        }
+
+        .loader-text {
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3436;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: pulseText 1.5s infinite;
+        }
+
+        .medical-cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            z-index: 10;
+            animation: crossRotate 2.4s infinite linear;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
+            5% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.9); }
+            10% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
+            15% { transform: translate(-50%, -50%) rotate(-45deg) scale(1); }
+            50% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
+            100% { transform: translate(-50%, -50%) rotate(-45deg) scale(0.8); }
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes crossRotate {
+            0%, 50% { transform: translate(-50%, -50%) rotate(0deg); }
+            75%, 100% { transform: translate(-50%, -50%) rotate(90deg); }
+        }
 </style>
     
 </head>
 <body>
+    <!-- Loader Overlay -->
+    <div id="appLoader" class="loader-overlay">
+        <div class="heart-container">
+            <div class="heart-shape"></div>
+            <i class="fas fa-plus medical-cross"></i>
+        </div>
+        <div class="loader-text">Memproses...</div>
+    </div>
+
     <!-- ESP Connection Alerts (Global) -->
     <div id="espConnectedAlert" class="alert alert-success alert-dismissible fade show d-none global-alert" role="alert">
         <i class="fas fa-check-circle me-2"></i> <strong id="espConnectedMessage">✅ Koneksi ESP Berhasil!</strong>
@@ -1576,6 +1686,24 @@
                 }
             }
         };
+
+        // Loader handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('appLoader');
+            
+            // Hide loader after page load (Entrance animation)
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 800); // Small delay for effect
+
+            // Show loader on logout
+            const logoutForm = document.querySelector('form[action="{{ route('logout') }}"]');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function() {
+                    loader.classList.remove('hidden');
+                });
+            }
+        });
 
         // Initialize on DOM ready
         if (document.readyState === 'loading') {
