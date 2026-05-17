@@ -81,9 +81,41 @@
                         </ul>
                     </div>
 
-                    <!-- Section 5 -->
+                    <!-- Section 5: Retensi Data -->
                     <div class="mb-4">
-                        <h4 class="fw-bold text-dark mb-3"><i class="fas fa-star text-primary me-2"></i> 5. Landasan Nilai Pancasila dalam Perlindungan Data</h4>
+                        <h4 class="fw-bold text-dark mb-3"><i class="fas fa-history text-primary me-2"></i> 5. Retensi Data (Penyimpanan Data)</h4>
+                        <p>Kami tidak menyimpan data lebih lama dari yang diperlukan untuk tujuan pemrosesan:</p>
+                        <ul class="text-muted">
+                            <li><strong>Data Sensor</strong>: Disimpan dalam database selama maksimal 1 tahun untuk keperluan analisis tren medis, setelah itu akan diarsipkan atau dihapus.</li>
+                            <li><strong>Data Akun</strong>: Akan disimpan selama akun Anda aktif. Jika akun dihapus, data pribadi akan langsung dimusnahkan.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 6: Hak-Hak Pengguna -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="fas fa-user-check text-primary me-2"></i> 6. Hak-Hak Pengguna</h4>
+                        <p>Sesuai dengan regulasi yang berlaku, Anda memiliki hak untuk:</p>
+                        <ul class="text-muted">
+                            <li>Mengakses data pribadi Anda yang kami simpan.</li>
+                            <li>Meminta koreksi jika ada data yang tidak akurat (seperti nama atau nomor telepon).</li>
+                            <li>Meminta penghapusan akun dan data pribadi Anda dari sistem kami.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 7: Kuki dan Sesi -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="fas fa-cookie-bite text-primary me-2"></i> 7. Penggunaan Kuki dan Sesi</h4>
+                        <p>Sistem ini menggunakan kuki (*cookies*) dan sesi database untuk:</p>
+                        <ul class="text-muted">
+                            <li>Menjaga Anda tetap masuk (*login*) selama sesi aktif.</li>
+                            <li>Mengingat preferensi tampilan Anda pada dashboard.</li>
+                            <li>Mendeteksi status online/offline pengguna demi keamanan sistem.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 8 -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="fas fa-star text-primary me-2"></i> 8. Landasan Nilai Pancasila dalam Perlindungan Data</h4>
                         <p>Sebagai sistem yang dikembangkan di Indonesia, kami menjunjung tinggi nilai-nilai Pancasila dalam pengelolaan data:</p>
                         <ul class="text-muted">
                             <li><strong>Sila ke-1 (Ketuhanan Yang Maha Esa)</strong>: Mengelola data adalah sebuah amanah. Kami bertanggung jawab secara moral kepada Tuhan dan manusia untuk tidak menyalahgunakan data ini.</li>
