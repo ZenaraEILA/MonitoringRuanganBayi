@@ -707,7 +707,7 @@
 
             <div class="login-footer">
                 <p class="mb-2"><i class="fas fa-info-circle"></i> Hubungi Administrator jika Anda membutuhkan akses.</p>
-                <a href="/kebijakan-privasi" class="text-muted text-decoration-none small"><i class="fas fa-user-shield"></i> Kebijakan Privasi</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" class="text-muted text-decoration-none small"><i class="fas fa-user-shield"></i> Kebijakan Privasi</a>
             </div>
 
         </div>
@@ -806,5 +806,100 @@
             }
         }
     </script>
+
+    <!-- Modal Kebijakan Privasi -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow" style="border-radius: 16px;">
+                <div class="modal-header bg-primary text-white p-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-shape bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-size: 20px;">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-white" id="privacyModalLabel">Kebijakan Privasi</h5>
+                            <small class="text-white-50">Terakhir diperbarui: 17 Mei 2026</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 p-md-5">
+                    <p class="lead text-muted mb-4">
+                        Selamat datang di Sistem Monitoring Suhu & Kelembapan Ruangan Bayi (<strong>Room Temp Baby</strong>). Kami sangat menghargai privasi Anda dan berkomitmen untuk melindungi data pribadi serta data medis yang dikelola dalam sistem ini.
+                    </p>
+
+                    <hr class="my-4" style="opacity: 0.1;">
+
+                    <!-- Section 1 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-database text-primary me-2"></i> 1. Data yang Kami Kumpulkan</h6>
+                        <ul class="text-muted small">
+                            <li><strong>Data Sensor Real-Time</strong>: Suhu dan kelembapan ruangan yang diambil secara otomatis oleh perangkat ESP8266/ESP32.</li>
+                            <li><strong>Data Akun Pengguna</strong>: Nama, email, username, dan password (terenkripsi) untuk keperluan login dan hak akses.</li>
+                            <li><strong>Log Aktivitas</strong>: Catatan waktu login, logout, dan perubahan data untuk keperluan audit keamanan.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 2 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-clipboard-check text-primary me-2"></i> 2. Penggunaan Data</h6>
+                        <ul class="text-muted small">
+                            <li>Menampilkan kondisi suhu dan kelembapan ruangan bayi secara real-time pada dashboard.</li>
+                            <li>Memberikan notifikasi darurat jika kondisi ruangan berada di luar batas aman.</li>
+                            <li>Menyusun laporan riwayat (history) untuk keperluan analisis medis oleh dokter atau perawat.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 3 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-lock text-primary me-2"></i> 3. Keamanan Data</h6>
+                        <ul class="text-muted small">
+                            <li>Semua komunikasi data antara perangkat ESP dan server menggunakan protokol yang aman.</li>
+                            <li>Password pengguna dienkripsi menggunakan algoritma <code>Bcrypt</code> standar industri.</li>
+                            <li>Akses ke database dibatasi dan dilindungi dengan kredensial yang kuat.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 4 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-user-tag text-primary me-2"></i> 4. Hak Akses Data</h6>
+                        <ul class="text-muted small">
+                            <li><strong>Admin</strong>: Memiliki akses penuh untuk mengelola user dan perangkat.</li>
+                            <li><strong>Petugas/Perawat</strong>: Dapat melihat data real-time dan riwayat untuk keperluan medis.</li>
+                            <li><strong>Publik</strong>: Hanya dapat melihat data real-time tanpa bisa melihat data pribadi atau riwayat masa lalu.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 5 -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-star text-primary me-2"></i> 5. Landasan Nilai Pancasila</h6>
+                        <ul class="text-muted small">
+                            <li><strong>Sila 1</strong>: Mengelola data adalah sebuah amanah dan tanggung jawab moral kepada Tuhan dan manusia.</li>
+                            <li><strong>Sila 2</strong>: Menghormati hak asasi pasien (bayi) untuk perlindungan privasi yang layak.</li>
+                            <li><strong>Sila 3</strong>: Sistem dibangun demi kepentingan bersama menjaga standar kesehatan nasional.</li>
+                            <li><strong>Sila 4</strong>: Kebijakan dibuat dengan penuh pertimbangan bijaksana demi transparansi.</li>
+                            <li><strong>Sila 5</strong>: Semua kalangan berhak mendapatkan standar pemantauan kesehatan yang sama amannya.</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info border-0 shadow-sm mt-4 mb-0" style="border-radius: 12px; background: rgba(13, 110, 253, 0.05);">
+                        <div class="d-flex gap-3">
+                            <i class="fas fa-info-circle text-primary fs-5 mt-1"></i>
+                            <div>
+                                <h6 class="fw-bold text-primary mb-1 small">Catatan Penting</h6>
+                                <p class="mb-0 text-muted" style="font-size: 0.8rem;">
+                                    Kebijakan ini dapat berubah sewaktu-waktu mengikuti perkembangan regulasi. Penggunaan sistem secara terus-menerus berarti Anda menyetujui kebijakan ini.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">Saya Mengerti</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
