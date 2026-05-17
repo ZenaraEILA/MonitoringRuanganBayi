@@ -706,7 +706,8 @@
             </form>
 
             <div class="login-footer">
-                <i class="fas fa-info-circle"></i> Hubungi Administrator jika Anda membutuhkan akses.
+                <p class="mb-2"><i class="fas fa-info-circle"></i> Hubungi Administrator jika Anda membutuhkan akses.</p>
+                <a href="{{ route('privacy') }}" class="text-muted text-decoration-none small"><i class="fas fa-user-shield"></i> Kebijakan Privasi</a>
             </div>
 
         </div>

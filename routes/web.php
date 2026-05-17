@@ -24,6 +24,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/login/public', [AuthController::class, 'publicLogin'])->name('login.public');
+Route::view('/kebijakan-privasi', 'privacy')->name('privacy');
 
 /**
  * Protected Routes

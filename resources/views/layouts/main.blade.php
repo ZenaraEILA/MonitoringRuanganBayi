@@ -1496,9 +1496,10 @@
     </div>
 
     <!-- Footer -->
-    <footer class="text-center">
+    <footer class="text-center py-3">
         <div class="container-fluid">
-            <p class="mb-0">&copy; 2026 Sistem Monitoring Suhu & Kelembapan Ruang Perawatan Bayi. All rights reserved.</p>
+            <p class="mb-1">&copy; 2026 Sistem Monitoring Suhu & Kelembapan Ruang Perawatan Bayi. All rights reserved.</p>
+            <a href="{{ route('privacy') }}" class="text-muted text-decoration-none small"><i class="fas fa-user-shield"></i> Kebijakan Privasi</a>
         </div>
     </footer>
 
