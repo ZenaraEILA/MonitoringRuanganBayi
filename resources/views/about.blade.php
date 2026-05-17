@@ -73,7 +73,18 @@
                                                 }
                                             @endphp
                                             <img src="{{ $imagePath }}" alt="{{ $member->name }}" class="rounded-circle shadow-sm border border-2 border-white mb-3" width="80" height="80" style="object-fit: cover;">
-                                            <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" title="Aktif"></span>
+                                            @php
+                                                $isOnline = false;
+                                                try {
+                                                    $isOnline = \DB::table('sessions')
+                                                        ->where('user_id', $member->id)
+                                                        ->where('last_activity', '>=', now()->subMinutes(5)->timestamp)
+                                                        ->exists();
+                                                } catch (\Throwable $e) {
+                                                    $isOnline = false;
+                                                }
+                                            @endphp
+                                            <span class="position-absolute bottom-0 end-0 {{ $isOnline ? 'bg-success' : 'bg-danger' }} border border-white rounded-circle p-2" title="{{ $isOnline ? 'Online' : 'Offline' }}"></span>
                                         </div>
                                         <h6 class="fw-bold mb-1 text-dark">{{ $member->name }}</h6>
                                         <div class="badge bg-soft-primary text-primary rounded-pill px-3 py-1 mb-2" style="font-size: 0.65rem; white-space: normal; line-height: 1.4;">
