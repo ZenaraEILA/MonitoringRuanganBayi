@@ -30,7 +30,9 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 20px 0;
         }
 
         /* Animated background elements */
@@ -366,19 +368,19 @@
 
         @media (max-width: 576px) {
             .login-card {
-                padding: 30px 20px;
+                padding: 25px 20px;
             }
 
             .login-header h1 {
-                font-size: 22px;
+                font-size: 20px;
             }
 
             .login-header p {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             .logo-icon {
-                font-size: 36px;
+                font-size: 32px;
             }
 
             .form-group input, .form-group select {
@@ -388,8 +390,7 @@
 
             body::before,
             body::after {
-                width: 200px;
-                height: 200px;
+                display: none;
             }
             
             .btn-public-float {
@@ -402,22 +403,38 @@
             }
             
             .login-wrapper {
-                padding: 15px;
+                padding: 10px;
+                max-width: 100%;
+            }
+            
+            .method-toggle {
+                flex-direction: column;
+                gap: 5px;
+                border: none;
+                background: #f1f3f5;
+            }
+            
+            .method-toggle .btn {
+                width: 100%;
+                border-radius: 8px !important;
+                background: white;
+                border: 1px solid #e8ebed;
+            }
+            
+            .method-toggle .btn-check:checked + .btn {
+                background: #0d6efd;
+                color: white;
+                border-color: #0d6efd;
             }
         }
 
         @media (max-width: 375px) {
             .login-card {
-                padding: 25px 15px;
+                padding: 20px 15px;
             }
             
             .login-header h1 {
-                font-size: 20px;
-            }
-            
-            .method-toggle .btn {
-                padding: 10px 5px;
-                font-size: 13px;
+                font-size: 18px;
             }
         }
 
