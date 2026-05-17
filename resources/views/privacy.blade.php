@@ -81,6 +81,19 @@
                         </ul>
                     </div>
 
+                    <!-- Section 5 -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-dark mb-3"><i class="fas fa-star text-primary me-2"></i> 5. Landasan Nilai Pancasila dalam Perlindungan Data</h4>
+                        <p>Sebagai sistem yang dikembangkan di Indonesia, kami menjunjung tinggi nilai-nilai Pancasila dalam pengelolaan data:</p>
+                        <ul class="text-muted">
+                            <li><strong>Sila ke-1 (Ketuhanan Yang Maha Esa)</strong>: Mengelola data adalah sebuah amanah. Kami bertanggung jawab secara moral kepada Tuhan dan manusia untuk tidak menyalahgunakan data ini.</li>
+                            <li><strong>Sila ke-2 (Kemanusiaan yang Adil dan Beradab)</strong>: Kami menghormati hak asasi setiap pasien (bayi) dan keluarga untuk mendapatkan perlindungan privasi yang layak dan beradab.</li>
+                            <li><strong>Sila ke-3 (Persatuan Indonesia)</strong>: Sistem ini dibangun untuk kepentingan bersama dalam menjaga standar kesehatan nasional demi masa depan generasi penerus bangsa.</li>
+                            <li><strong>Sila ke-4 (Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan)</strong>: Kebijakan ini dibuat dengan penuh pertimbangan bijaksana untuk transparansi dan akuntabilitas kepada pengguna.</li>
+                            <li><strong>Sila ke-5 (Keadilan Sosial bagi Seluruh Rakyat Indonesia)</strong>: Semua kalangan berhak mendapatkan standar pemantauan kesehatan yang sama amannya tanpa membeda-bedakan status sosial.</li>
+                        </ul>
+                    </div>
+
                     <div class="alert alert-info border-0 shadow-sm mt-5" style="border-radius: 12px; background: rgba(13, 110, 253, 0.05);">
                         <div class="d-flex gap-3">
                             <i class="fas fa-info-circle text-primary fs-4 mt-1"></i>
