@@ -1040,7 +1040,7 @@
             font-size: 12px;
         }
 
-        /* --- HEART LOADER ANIMATION --- */
+        /* --- MEDICAL ECG LOADER ANIMATION --- */
         .loader-overlay {
             position: fixed;
             top: 0;
@@ -1063,92 +1063,70 @@
             pointer-events: none;
         }
 
-        .hearts-loader {
+        .ecg-loader-container {
             display: flex;
-            gap: 20px;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .heart-item {
-            width: 25px;
-            height: 25px;
-            position: relative;
-            transform: rotate(-45deg);
-            border-radius: 4px;
-            animation: heartPulse 1.2s infinite ease-in-out;
+        .heart-pulse-box {
+            font-size: 60px;
+            color: #ff4757;
+            animation: professionalPulse 1.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .heart-item:before,
-        .heart-item:after {
-            content: '';
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            position: absolute;
+        .ecg-svg-container {
+            width: 200px;
+            height: 40px;
+            margin-bottom: 20px;
         }
 
-        .heart-item:before {
-            top: -12.5px;
-            left: 0;
+        .ecg-path {
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+            animation: ecgScan 2.5s linear infinite;
         }
 
-        .heart-item:after {
-            top: 0;
-            left: 12.5px;
-        }
-
-        /* Colors */
-        .heart-item.blue {
-            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-        }
-        .heart-item.blue:before,
-        .heart-item.blue:after {
-            background: #0d6efd;
-        }
-
-        .heart-item.red {
-            background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
-            animation-delay: 0.4s;
-        }
-        .heart-item.red:before,
-        .heart-item.red:after {
-            background: #dc3545;
-        }
-
-        .heart-item.green {
-            background: linear-gradient(135deg, #198754 0%, #116a42 100%);
-            animation-delay: 0.8s;
-        }
-        .heart-item.green:before,
-        .heart-item.green:after {
-            background: #198754;
-        }
-
-        @keyframes heartPulse {
-            0%, 100% {
-                transform: rotate(-45deg) scale(0.8);
-                opacity: 0.4;
+        @keyframes ecgScan {
+            0% {
+                stroke-dashoffset: 400;
             }
             50% {
-                transform: rotate(-45deg) scale(1.2);
-                opacity: 1;
-                box-shadow: 0 0 20px rgba(0,0,0,0.15);
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: -400;
+            }
+        }
+
+        @keyframes professionalPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 0.8; 
+            }
+            50% { 
+                transform: scale(1.15); 
+                opacity: 1; 
+                text-shadow: 0 0 15px rgba(255, 71, 87, 0.4); 
             }
         }
 
         .loader-text {
-            margin-top: 40px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             color: #2d3436;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             animation: pulseText 1.5s infinite;
         }
 
         @keyframes pulseText {
-            0%, 100% { opacity: 0.6; }
+            0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
 </style>
@@ -1157,12 +1135,17 @@
 <body>
     <!-- Loader Overlay -->
     <div id="appLoader" class="loader-overlay">
-        <div class="hearts-loader">
-            <div class="heart-item blue"></div>
-            <div class="heart-item red"></div>
-            <div class="heart-item green"></div>
+        <div class="ecg-loader-container">
+            <div class="heart-pulse-box">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="ecg-svg-container">
+                <svg class="ecg-svg" viewBox="0 0 200 40" width="100%" height="100%">
+                    <path class="ecg-path" d="M 0,20 L 40,20 L 50,5 L 60,35 L 70,20 L 110,20 L 120,10 L 130,30 L 140,20 L 200,20" fill="none" stroke="#0d6efd" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="loader-text">Memproses Data Medis...</div>
         </div>
-        <div class="loader-text">Memproses...</div>
     </div>
 
     <!-- ESP Connection Alerts (Global) -->
