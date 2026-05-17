@@ -205,7 +205,7 @@
             padding: 12px 16px;
             border: 2px solid #e8ebed;
             border-radius: 12px;
-            font-size: 15px;
+            font-size: 16px;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             background: #f8f9fa;
             color: #2d3436;
@@ -366,33 +366,58 @@
 
         @media (max-width: 576px) {
             .login-card {
-                padding: 35px 25px;
+                padding: 30px 20px;
             }
 
             .login-header h1 {
-                font-size: 26px;
+                font-size: 22px;
+            }
+
+            .login-header p {
+                font-size: 13px;
             }
 
             .logo-icon {
-                font-size: 40px;
+                font-size: 36px;
             }
 
-            .form-group input {
-                padding: 12px 14px;
-                font-size: 14px;
+            .form-group input, .form-group select {
+                padding: 10px 12px;
+                font-size: 16px;
             }
 
             body::before,
             body::after {
-                width: 300px;
-                height: 300px;
+                width: 200px;
+                height: 200px;
             }
             
             .btn-public-float {
-                top: 10px !important;
-                right: 10px !important;
-                padding: 8px 15px !important;
-                font-size: 13px !important;
+                top: auto !important;
+                bottom: 20px !important;
+                right: 20px !important;
+                padding: 10px 20px !important;
+                font-size: 14px !important;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .login-wrapper {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .login-card {
+                padding: 25px 15px;
+            }
+            
+            .login-header h1 {
+                font-size: 20px;
+            }
+            
+            .method-toggle .btn {
+                padding: 10px 5px;
+                font-size: 13px;
             }
         }
 
