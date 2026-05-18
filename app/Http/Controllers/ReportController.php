@@ -93,10 +93,20 @@ class ReportController extends Controller
         $startDate = $date->startOfMonth();
         $endDate = $date->endOfMonth();
 
+        // Agregasi data per jam untuk menghindari memory limit karena data IoT sangat banyak
         $monitorings = Monitoring::where('device_id', $device->id)
             ->whereBetween('recorded_at', [$startDate, $endDate])
-            ->orderBy('recorded_at')
-            ->get();
+            ->selectRaw('DATE(recorded_at) as date, HOUR(recorded_at) as hour, AVG(temperature) as temperature, AVG(humidity) as humidity, MIN(recorded_at) as recorded_at')
+            ->groupBy('date', 'hour')
+            ->orderBy('date')
+            ->orderBy('hour')
+            ->get()
+            ->map(function($item) {
+                $item->recorded_at = Carbon::parse($item->recorded_at);
+                // Tentukan status berdasarkan rata-rata
+                $item->status = ($item->temperature < 28 || $item->temperature > 30) ? 'Tidak Aman' : 'Aman';
+                return $item;
+            });
 
         $filename = 'Laporan-Bulanan-' . $device->device_name . '-' . $date->format('Y-m');
 
