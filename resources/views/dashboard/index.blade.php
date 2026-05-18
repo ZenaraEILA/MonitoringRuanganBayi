@@ -4,16 +4,7 @@
 
 @section('content')
 
-<!-- Realtime Connection Status Alert -->
-<div id="connectionStatusAlert" class="alert alert-info alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert" style="display: none;">
-    <div>
-        <span id="connectionStatusText">
-            <i class="fas fa-wifi me-2"></i>
-            <span id="connectionStatusMessage">Checking connection...</span>
-        </span>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+
 
 <!-- Global connection alerts are handled in layouts/main.blade.php -->
 
