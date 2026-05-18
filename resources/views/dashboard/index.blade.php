@@ -369,11 +369,32 @@
 <style>
 #emergencyAlertContainer {
     position: fixed;
-    top: 20px;
-    right: 20px;
     z-index: 2000;
-    width: calc(100% - 40px);
-    max-width: 350px;
+}
+
+/* Desktop: Melayang di pojok kanan atas */
+@media (min-width: 576px) {
+    #emergencyAlertContainer {
+        top: 20px;
+        right: 20px;
+        width: 350px;
+    }
+}
+
+/* Mobile: Menjadi banner di bagian bawah layar (Bottom Sheet) agar mudah dibaca */
+@media (max-width: 575.98px) {
+    #emergencyAlertContainer {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        width: 100%;
+    }
+    #emergencyAlertContainer .alert {
+        border-radius: 16px 16px 0 0 !important;
+        margin-bottom: 0 !important;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1) !important;
+    }
 }
 .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
