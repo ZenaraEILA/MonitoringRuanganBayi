@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-4">
+            <div class="col-lg-2 col-md-4">
                 <label for="search_kelembapan" class="form-label fw-semibold text-muted small mb-1">Cari Kelembapan</label>
                 <div class="input-group">
                     <input type="text" name="search_kelembapan" id="search_kelembapan" class="form-control" value="{{ $searchKelembapan ?? '' }}" placeholder="55.0">
@@ -80,10 +80,13 @@
                 </div>
             </div>
 
-            <div class="col-lg-1 col-md-4 d-flex align-items-end mt-3 mt-lg-0">
-                <button type="submit" class="btn btn-primary w-100" style="border-radius: 8px; padding: 10px 14px;" title="Terapkan Filter">
+            <div class="col-lg-2 col-md-4 d-flex align-items-end mt-3 mt-lg-0 gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1" style="border-radius: 8px; padding: 10px 14px;" title="Terapkan Filter">
                     <i class="fas fa-search"></i>
                 </button>
+                <a href="{{ route('monitoring.history') }}" class="btn btn-outline-secondary flex-grow-1" style="border-radius: 8px; padding: 10px 14px;" title="Reset Filter">
+                    <i class="fas fa-undo"></i>
+                </a>
             </div>
         </form>
     </div>
