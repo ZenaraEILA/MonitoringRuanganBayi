@@ -294,6 +294,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
                                 {{ number_format($summary->avg_temp, 2) }} °C
                             </span>
+                            @if($summary->avg_temp >= 31)
+                                <span class="badge bg-danger ms-1">Panas</span>
+                            @elseif($summary->avg_temp <= 29)
+                                <span class="badge bg-primary ms-1">Dingin</span>
+                            @endif
                         </td>
                         <td>
                             <small class="text-muted">{{ number_format($summary->min_temp, 1) }} °C - {{ number_format($summary->max_temp, 1) }} °C</small>
