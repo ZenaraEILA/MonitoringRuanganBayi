@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <i class="fas fa-fire-alt me-1"></i>Panas
                             </span>
                         @elseif($monitoring->temperature <= 29)
-                            <span class="badge bg-warning text-dark ms-1">
+                            <span class="badge bg-primary ms-1">
                                 <i class="fas fa-snowflake me-1"></i>Dingin
                             </span>
                         @endif
