@@ -32,7 +32,7 @@
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
-            padding: 20px 0;
+            padding: 40px 0;
         }
 
         /* Animated background elements */
@@ -93,6 +93,7 @@
             width: 100%;
             max-width: 450px;
             padding: 20px;
+            margin: auto;
         }
 
         .login-card {
