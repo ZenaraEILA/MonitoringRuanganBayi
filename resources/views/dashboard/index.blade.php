@@ -692,7 +692,7 @@ function updateEmergencyAlert(emergencyDevices) {
     }
 
     let html = `
-        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px; background-color: #fff5f5; border-left: 5px solid #dc3545 !important;" role="alert">
+        <div class="alert alert-danger border-0 shadow-sm mb-4 d-flex flex-column" style="border-radius: 12px; background-color: #fff5f5; border-left: 5px solid #dc3545 !important;" role="alert">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="d-flex align-items-center gap-2">
                     <i class="fas fa-exclamation-triangle text-danger animate-pulse"></i>
@@ -701,20 +701,20 @@ function updateEmergencyAlert(emergencyDevices) {
                 <button type="button" class="btn-close" style="font-size: 0.75rem;" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             
-            <p class="text-muted mb-2" style="font-size: 0.8rem;">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal (> 5 menit):</p>
+            <p class="text-dark small mb-2">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal (> 5 menit):</p>
             
-            <div class="emergency-list mb-2">
+            <div class="emergency-list">
     `;
 
     emergencyDevices.forEach(device => {
         html += `
-                <div class="d-flex align-items-center justify-content-between p-2 mb-1 bg-white rounded-2 border shadow-sm">
-                    <div>
-                        <span class="fw-bold text-dark" style="font-size: 0.8rem;">${device.device_name}</span>
-                        <span class="text-muted small ms-1" style="font-size: 0.7rem;">(${device.location})</span>
+                <div class="bg-white p-2 rounded-2 border mb-1 d-flex flex-column">
+                    <div class="mb-1">
+                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">${device.device_name}</span>
+                        <span class="text-muted small ms-1" style="font-size: 0.75rem;">(${device.location})</span>
                     </div>
                     ${device.emergency_detail ? `
-                        <div class="text-danger d-flex gap-2" style="font-size: 0.75rem;">
+                        <div class="text-danger d-flex gap-3" style="font-size: 0.8rem;">
                             <span><i class="fas fa-thermometer-half me-1"></i>${device.emergency_detail.temperature}°C</span>
                             <span><i class="fas fa-tint me-1"></i>${device.emergency_detail.humidity}%</span>
                         </div>
@@ -726,7 +726,7 @@ function updateEmergencyAlert(emergencyDevices) {
     html += `
             </div>
 
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end mt-2">
                 <a href="/monitoring/emergency-incidents" class="btn btn-sm btn-outline-danger px-3 rounded-pill" style="font-size: 0.75rem; padding: 4px 10px;">Lihat Detail</a>
             </div>
         </div>
