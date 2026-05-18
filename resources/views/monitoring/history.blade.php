@@ -17,6 +17,24 @@
     </div>
 </div>
 
+<style>
+    .row-danger-cold td {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%) !important;
+    }
+    .row-safe-cold td {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%) !important;
+    }
+    .row-danger-hot td {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.02) 100%) !important;
+    }
+    .row-safe-hot td {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%) !important;
+    }
+    .row-danger-only td {
+        background-color: rgba(239, 68, 68, 0.05) !important;
+    }
+</style>
+
 <!-- Filter -->
 <div class="card mb-4 border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
@@ -320,7 +338,25 @@ document.addEventListener('DOMContentLoaded', function () {
             </thead>
             <tbody>
                 @forelse($monitorings as $monitoring)
-                <tr class="{{ $monitoring->status === 'Tidak Aman' ? 'table-danger' : '' }}">
+                @php
+                    $rowClass = '';
+                    $isPanas = $monitoring->temperature >= 31;
+                    $isDingin = $monitoring->temperature <= 29;
+                    $isAman = $monitoring->status === 'Aman';
+
+                    if (!$isAman && $isDingin) {
+                        $rowClass = 'row-danger-cold';
+                    } elseif ($isAman && $isDingin) {
+                        $rowClass = 'row-safe-cold';
+                    } elseif (!$isAman && $isPanas) {
+                        $rowClass = 'row-danger-hot';
+                    } elseif ($isAman && $isPanas) {
+                        $rowClass = 'row-safe-hot';
+                    } elseif (!$isAman) {
+                        $rowClass = 'row-danger-only';
+                    }
+                @endphp
+                <tr class="{{ $rowClass }}">
                     <td>
                         <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
                             {{ number_format($monitoring->temperature, 2) }}
