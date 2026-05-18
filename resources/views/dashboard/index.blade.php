@@ -720,7 +720,7 @@ function updateEmergencyAlert(emergencyDevices) {
     html += `
             </ul>
             <hr class="my-2">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                 <a href="/monitoring/emergency-incidents" class="btn btn-sm btn-danger px-3">Lihat Semua Insiden Darurat</a>
                 <small class="text-danger-emphasis fw-bold"><i class="fas fa-sync fa-spin me-1"></i> Terpantau Real-time</small>
             </div>
