@@ -332,21 +332,21 @@ document.addEventListener('DOMContentLoaded', function () {
                         </span>
                     </td>
                     <td>
-                        @php
-                            $statusText = $monitoring->status;
-                            $badgeClass = $monitoring->status === 'Aman' ? 'bg-success' : 'bg-danger';
-                            
-                            if ($monitoring->temperature >= 31) {
-                                $statusText = 'Panas';
-                                $badgeClass = 'bg-danger';
-                            } elseif ($monitoring->temperature <= 29) {
-                                $statusText = 'Dingin';
-                                $badgeClass = 'bg-warning text-dark';
-                            }
-                        @endphp
-                        <span class="badge {{ $badgeClass }}">
-                            {{ $statusText }}
+                        <!-- Status Utama -->
+                        <span class="badge {{ $monitoring->status === 'Aman' ? 'bg-success' : 'bg-danger' }}">
+                            {{ $monitoring->status }}
                         </span>
+                        
+                        <!-- Status Kondisi Spesifik -->
+                        @if($monitoring->temperature >= 31)
+                            <span class="badge bg-danger ms-1">
+                                <i class="fas fa-fire-alt me-1"></i>Panas
+                            </span>
+                        @elseif($monitoring->temperature <= 29)
+                            <span class="badge bg-warning text-dark ms-1">
+                                <i class="fas fa-snowflake me-1"></i>Dingin
+                            </span>
+                        @endif
                     </td>
                     <td>
                         @php
