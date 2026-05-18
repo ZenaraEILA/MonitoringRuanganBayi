@@ -407,6 +407,13 @@
             .login-wrapper {
                 padding: 10px;
                 max-width: 100%;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 1s ease, transform 1s ease;
+            }
+            .login-wrapper.visible {
+                opacity: 1;
+                transform: translateY(0);
             }
             
             .method-toggle {
@@ -482,14 +489,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
+            background: linear-gradient(135deg, #1a202c 0%, #0a0e17 100%);
             z-index: 9999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 1s ease, visibility 1s ease;
+            color: white;
         }
 
         .loader-overlay.hidden {
@@ -578,7 +585,8 @@
                     <path class="ecg-path" d="M 0,20 L 40,20 L 50,5 L 60,35 L 70,20 L 110,20 L 120,10 L 130,30 L 140,20 L 200,20" fill="none" stroke="#0d6efd" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="loader-text">Memproses Data Medis...</div>
+            <div class="loader-text" style="font-weight: 800; letter-spacing: 2px; color: #fff;">SISTEM MONITORING RUANGAN BAYI</div>
+            <div class="loader-subtext" style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 8px;">Mempersiapkan Lingkungan Aman...</div>
         </div>
     </div>
     <!-- Public Quick Access Button -->
@@ -720,10 +728,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const loader = document.getElementById('appLoader');
             
-            // Hide loader after page load (Entrance animation)
+            // Hide loader after page load (Cinematic Entrance)
             setTimeout(() => {
                 loader.classList.add('hidden');
-            }, 800); // Small delay for effect
+                const wrapper = document.querySelector('.login-wrapper');
+                if (wrapper) wrapper.classList.add('visible');
+            }, 3000); // 3 seconds cinematic delay
 
             // Show loader on form submit
             const loginForm = document.querySelector('form[action="{{ route('login.post') }}"]');
