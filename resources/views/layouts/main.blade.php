@@ -32,7 +32,40 @@
         }
 
         * {
-            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Smooth HD Global Effects */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .card, .btn, .nav-link, .dropdown-item {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.3s ease, 
+                        background-color 0.3s ease, 
+                        color 0.3s ease !important;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+        }
+
+        /* Page Load Entrance Animation */
+        .container-fluid {
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         body {
