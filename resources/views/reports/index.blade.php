@@ -34,8 +34,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body pt-3">
-                    <form action="{{ route('reports.export-daily') }}" method="POST">
+                <div class="card-body pt-3 d-flex flex-column">
+                    <form action="{{ route('reports.export-daily') }}" method="POST" class="flex-grow-1 d-flex flex-column justify-content-between">
                         @csrf
 
                         <!-- Hidden device_id since only 1 room exists -->
@@ -45,6 +45,7 @@
                             <label for="daily_date" class="form-label small text-muted text-uppercase fw-bold">Pilih Tanggal</label>
                             <input type="date" class="form-control form-control-lg @error('date') is-invalid @enderror" id="daily_date" name="date" 
                                    value="{{ old('date', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required style="border-radius: 10px; font-size: 0.95rem; border: 2px solid #e8ebed;">
+                            <small class="form-text text-muted">&nbsp;</small> <!-- Spacer to match height -->
                             @error('date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -55,20 +56,20 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-fill">
                                     <input type="radio" class="btn-check" name="format" id="daily_pdf" value="pdf" checked>
-                                    <label class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="daily_pdf" style="border-radius: 10px; border-width: 2px;">
+                                    <label class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="daily_pdf" style="border-radius: 10px; border-width: 2px;">
                                         <i class="far fa-file-pdf"></i> PDF
                                     </label>
                                 </div>
                                 <div class="flex-fill">
                                     <input type="radio" class="btn-check" name="format" id="daily_excel" value="excel">
-                                    <label class="btn btn-outline-success w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="daily_excel" style="border-radius: 10px; border-width: 2px;">
+                                    <label class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="daily_excel" style="border-radius: 10px; border-width: 2px;">
                                         <i class="far fa-file-excel"></i> Excel
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold" style="border-radius: 10px; font-size: 0.95rem;">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold mt-auto" style="border-radius: 10px; font-size: 0.95rem;">
                             <i class="fas fa-cloud-download-alt me-2"></i>Unduh Laporan
                         </button>
                     </form>
@@ -105,8 +106,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body pt-3">
-                    <form action="{{ route('reports.export-weekly') }}" method="POST">
+                <div class="card-body pt-3 d-flex flex-column">
+                    <form action="{{ route('reports.export-weekly') }}" method="POST" class="flex-grow-1 d-flex flex-column justify-content-between">
                         @csrf
 
                         <!-- Hidden device_id since only 1 room exists -->
@@ -117,10 +118,10 @@
                             <input type="date" class="form-control form-control-lg @error('start_date') is-invalid @enderror" id="weekly_start_date" 
                                    name="start_date" value="{{ old('start_date', date('Y-m-d', strtotime('Monday this week'))) }}" 
                                    max="{{ date('Y-m-d') }}" required style="border-radius: 10px; font-size: 0.95rem; border: 2px solid #e8ebed;">
+                            <small class="form-text text-muted">Laporan untuk 7 hari mulai dari tanggal ini</small>
                             @error('start_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted">Laporan untuk 7 hari mulai dari tanggal ini</small>
                         </div>
 
                         <div class="mb-3">
@@ -128,20 +129,20 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-fill">
                                     <input type="radio" class="btn-check" name="format" id="weekly_pdf" value="pdf" checked>
-                                    <label class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="weekly_pdf" style="border-radius: 10px; border-width: 2px;">
+                                    <label class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="weekly_pdf" style="border-radius: 10px; border-width: 2px;">
                                         <i class="far fa-file-pdf"></i> PDF
                                     </label>
                                 </div>
                                 <div class="flex-fill">
                                     <input type="radio" class="btn-check" name="format" id="weekly_excel" value="excel">
-                                    <label class="btn btn-outline-success w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="weekly_excel" style="border-radius: 10px; border-width: 2px;">
+                                    <label class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="weekly_excel" style="border-radius: 10px; border-width: 2px;">
                                         <i class="far fa-file-excel"></i> Excel
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-info btn-lg w-100 fw-bold text-white" style="border-radius: 10px; font-size: 0.95rem; background: #0dcaf0; border: none;">
+                        <button type="submit" class="btn btn-info btn-lg w-100 fw-bold text-white mt-auto" style="border-radius: 10px; font-size: 0.95rem; background: #0dcaf0; border: none;">
                             <i class="fas fa-cloud-download-alt me-2"></i>Unduh Laporan
                         </button>
                     </form>
@@ -178,8 +179,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body pt-3">
-                    <form action="{{ route('reports.export-monthly') }}" method="POST">
+                <div class="card-body pt-3 d-flex flex-column">
+                    <form action="{{ route('reports.export-monthly') }}" method="POST" class="flex-grow-1 d-flex flex-column justify-content-between">
                         @csrf
 
                         <!-- Hidden device_id since only 1 room exists -->
@@ -189,6 +190,7 @@
                             <label for="monthly_month" class="form-label small text-muted text-uppercase fw-bold">Pilih Bulan & Tahun</label>
                             <input type="month" class="form-control form-control-lg @error('month') is-invalid @enderror" id="monthly_month" 
                                    name="month" value="{{ old('month', date('Y-m')) }}" required style="border-radius: 10px; font-size: 0.95rem; border: 2px solid #e8ebed;">
+                            <small class="form-text text-muted">&nbsp;</small> <!-- Spacer to match height -->
                             @error('month')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -199,20 +201,20 @@
                             <div class="d-flex gap-2">
                                 <div class="flex-fill">
                                     <input type="radio" class="btn-check" name="format" id="monthly_pdf" value="pdf" checked>
-                                    <label class="btn btn-outline-danger w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="monthly_pdf" style="border-radius: 10px; border-width: 2px;">
+                                    <label class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="monthly_pdf" style="border-radius: 10px; border-width: 2px;">
                                         <i class="far fa-file-pdf"></i> PDF
                                     </label>
                                 </div>
                                 <div class="flex-fill">
                                     <input type="radio" class="btn-check" name="format" id="monthly_excel" value="excel">
-                                    <label class="btn btn-outline-success w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="monthly_excel" style="border-radius: 10px; border-width: 2px;">
+                                    <label class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2" for="monthly_excel" style="border-radius: 10px; border-width: 2px;">
                                         <i class="far fa-file-excel"></i> Excel
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold" style="border-radius: 10px; font-size: 0.95rem;">
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold mt-auto" style="border-radius: 10px; font-size: 0.95rem;">
                             <i class="fas fa-cloud-download-alt me-2"></i>Unduh Laporan
                         </button>
                     </form>
