@@ -367,35 +367,7 @@
 @endif
 
 <style>
-#emergencyAlertContainer {
-    position: fixed;
-    z-index: 2000;
-}
 
-/* Desktop: Melayang di pojok kanan atas */
-@media (min-width: 576px) {
-    #emergencyAlertContainer {
-        top: 20px;
-        right: 20px;
-        width: 350px;
-    }
-}
-
-/* Mobile: Menjadi banner di bagian bawah layar (Bottom Sheet) agar mudah dibaca */
-@media (max-width: 575.98px) {
-    #emergencyAlertContainer {
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: auto;
-        width: 100%;
-    }
-    #emergencyAlertContainer .alert {
-        border-radius: 16px 16px 0 0 !important;
-        margin-bottom: 0 !important;
-        box-shadow: 0 -5px 15px rgba(0,0,0,0.1) !important;
-    }
-}
 .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -720,7 +692,7 @@ function updateEmergencyAlert(emergencyDevices) {
     }
 
     let html = `
-        <div class="alert alert-danger border-0 shadow-lg mb-0" style="border-radius: 12px; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); border-left: 5px solid #dc3545 !important;" role="alert">
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px; background-color: #fff5f5; border-left: 5px solid #dc3545 !important;" role="alert">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="d-flex align-items-center gap-2">
                     <i class="fas fa-exclamation-triangle text-danger animate-pulse"></i>
