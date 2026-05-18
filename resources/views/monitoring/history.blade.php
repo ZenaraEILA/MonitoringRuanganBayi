@@ -332,8 +332,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         </span>
                     </td>
                     <td>
-                        <span class="badge {{ $monitoring->status === 'Aman' ? 'bg-success' : 'bg-danger' }}">
-                            {{ $monitoring->status }}
+                        @php
+                            $statusText = $monitoring->status;
+                            $badgeClass = $monitoring->status === 'Aman' ? 'bg-success' : 'bg-danger';
+                            
+                            if ($monitoring->temperature >= 31) {
+                                $statusText = 'Panas';
+                                $badgeClass = 'bg-danger';
+                            } elseif ($monitoring->temperature <= 29) {
+                                $statusText = 'Dingin';
+                                $badgeClass = 'bg-warning text-dark';
+                            }
+                        @endphp
+                        <span class="badge {{ $badgeClass }}">
+                            {{ $statusText }}
                         </span>
                     </td>
                     <td>
