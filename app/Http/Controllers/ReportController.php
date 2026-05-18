@@ -90,12 +90,14 @@ class ReportController extends Controller
 
         $device = Device::findOrFail($validated['device_id']);
         $date = Carbon::parse($validated['month'] . '-01');
-        $startDate = $date->startOfMonth();
-        $endDate = $date->endOfMonth();
+        $startDate = $date->copy()->startOfMonth();
+        $endDate = $date->copy()->endOfMonth();
 
         // Agregasi data per jam untuk menghindari memory limit karena data IoT sangat banyak
+        // Menggunakan whereMonth dan whereYear agar pencarian data bulan ini lebih pasti terbaca
         $monitorings = Monitoring::where('device_id', $device->id)
-            ->whereBetween('recorded_at', [$startDate, $endDate])
+            ->whereMonth('recorded_at', $date->month)
+            ->whereYear('recorded_at', $date->year)
             ->selectRaw('DATE(recorded_at) as date, HOUR(recorded_at) as hour, AVG(temperature) as temperature, AVG(humidity) as humidity, MIN(recorded_at) as recorded_at')
             ->groupBy('date', 'hour')
             ->orderBy('date')
