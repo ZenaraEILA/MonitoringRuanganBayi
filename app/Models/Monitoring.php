@@ -107,8 +107,10 @@ class Monitoring extends Model
             ->where('recorded_at', '>=', $fiveMinutesAgo)
             ->count();
         
-        // Tetap anggap darurat jika ada 5+ data "Tidak Aman" dalam 5 menit terakhir
-        return $unsafeCount >= 5;
+        // Karena alat mengirim data setiap 10 detik, maka dalam 5 menit idealnya ada 30 data.
+        // Kita naikkan ambang batasnya menjadi minimal 25 data "Tidak Aman" berturut-turut/dalam rentang tersebut
+        // agar tidak terlalu sensitif dan benar-benar merepresentasikan kondisi darurat > 5 menit.
+        return $unsafeCount >= 25;
     }
 
     /**
