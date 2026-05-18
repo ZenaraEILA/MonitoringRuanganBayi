@@ -700,32 +700,31 @@ function updateEmergencyAlert(emergencyDevices) {
     }
 
     let html = `
-        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 16px; background-color: #fff5f5; border-left: 5px solid #dc3545 !important;" role="alert">
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                    <i class="fas fa-exclamation-triangle animate-pulse"></i>
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px; background-color: #fff5f5; border-left: 5px solid #dc3545 !important;" role="alert">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-exclamation-triangle text-danger animate-pulse"></i>
+                    <h6 class="fw-bold text-danger mb-0" style="font-size: 0.95rem;">KONDISI DARURAT!</h6>
                 </div>
-                <div>
-                    <h6 class="fw-bold text-danger mb-0">KONDISI DARURAT!</h6>
-                    <small class="text-muted">Terpantau Real-time</small>
-                </div>
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" style="font-size: 0.75rem;" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             
-            <p class="text-dark small mb-3">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal selama lebih dari 5 menit:</p>
+            <p class="text-muted mb-2" style="font-size: 0.8rem;">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal (> 5 menit):</p>
             
-            <div class="emergency-list mb-3">
+            <div class="emergency-list mb-2">
     `;
 
     emergencyDevices.forEach(device => {
         html += `
-                <div class="bg-white p-3 rounded-3 border mb-2 shadow-sm">
-                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">${device.device_name} <span class="text-muted small">(${device.location})</span></div>
+                <div class="d-flex align-items-center justify-content-between p-2 mb-1 bg-white rounded-2 border shadow-sm">
+                    <div>
+                        <span class="fw-bold text-dark" style="font-size: 0.8rem;">${device.device_name}</span>
+                        <span class="text-muted small ms-1" style="font-size: 0.7rem;">(${device.location})</span>
+                    </div>
                     ${device.emergency_detail ? `
-                        <div class="text-danger small mt-1 d-flex flex-wrap gap-2" style="font-size: 0.8rem;">
+                        <div class="text-danger d-flex gap-2" style="font-size: 0.75rem;">
                             <span><i class="fas fa-thermometer-half me-1"></i>${device.emergency_detail.temperature}°C</span>
                             <span><i class="fas fa-tint me-1"></i>${device.emergency_detail.humidity}%</span>
-                            <span><i class="fas fa-clock me-1"></i>${device.emergency_detail.diff_for_humans}</span>
                         </div>
                     ` : ''}
                 </div>
@@ -735,8 +734,8 @@ function updateEmergencyAlert(emergencyDevices) {
     html += `
             </div>
 
-            <div class="d-flex flex-column gap-2">
-                <a href="/monitoring/emergency-incidents" class="btn btn-danger btn-sm w-100 rounded-pill py-2 fw-bold">Lihat Semua Insiden Darurat</a>
+            <div class="d-flex justify-content-end">
+                <a href="/monitoring/emergency-incidents" class="btn btn-sm btn-outline-danger px-3 rounded-pill" style="font-size: 0.75rem; padding: 4px 10px;">Lihat Detail</a>
             </div>
         </div>
     `;
