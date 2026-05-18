@@ -700,31 +700,44 @@ function updateEmergencyAlert(emergencyDevices) {
     }
 
     let html = `
-        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-start border-5 border-danger" role="alert">
-            <h4 class="alert-heading fw-bold"><i class="fas fa-exclamation-triangle animate-pulse"></i> ⚠️ KONDISI DARURAT!</h4>
-            <p class="mb-2">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal selama lebih dari 5 menit:</p>
-            <ul class="mb-0">
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 16px; background-color: #fff5f5; border-left: 5px solid #dc3545 !important;" role="alert">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <i class="fas fa-exclamation-triangle animate-pulse"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold text-danger mb-0">KONDISI DARURAT!</h6>
+                    <small class="text-muted">Terpantau Real-time</small>
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <p class="text-dark small mb-3">Terdapat <strong>${emergencyDevices.length}</strong> ruangan dalam kondisi tidak normal selama lebih dari 5 menit:</p>
+            
+            <div class="emergency-list mb-3">
     `;
 
     emergencyDevices.forEach(device => {
         html += `
-            <li class="mb-1">
-                <strong>${device.device_name}</strong> (${device.location})
-                ${device.emergency_detail ? 
-                    `<br><small class="text-danger-emphasis">Suhu: ${device.emergency_detail.temperature}°C | Kelembapan: ${device.emergency_detail.humidity}% | Waktu: ${device.emergency_detail.diff_for_humans}</small>` 
-                    : ''}
-            </li>
+                <div class="bg-white p-3 rounded-3 border mb-2 shadow-sm">
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">${device.device_name} <span class="text-muted small">(${device.location})</span></div>
+                    ${device.emergency_detail ? `
+                        <div class="text-danger small mt-1 d-flex flex-wrap gap-2" style="font-size: 0.8rem;">
+                            <span><i class="fas fa-thermometer-half me-1"></i>${device.emergency_detail.temperature}°C</span>
+                            <span><i class="fas fa-tint me-1"></i>${device.emergency_detail.humidity}%</span>
+                            <span><i class="fas fa-clock me-1"></i>${device.emergency_detail.diff_for_humans}</span>
+                        </div>
+                    ` : ''}
+                </div>
         `;
     });
 
     html += `
-            </ul>
-            <hr class="my-2">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
-                <a href="/monitoring/emergency-incidents" class="btn btn-sm btn-danger px-3">Lihat Semua Insiden Darurat</a>
-                <small class="text-danger-emphasis fw-bold"><i class="fas fa-sync fa-spin me-1"></i> Terpantau Real-time</small>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+            <div class="d-flex flex-column gap-2">
+                <a href="/monitoring/emergency-incidents" class="btn btn-danger btn-sm w-100 rounded-pill py-2 fw-bold">Lihat Semua Insiden Darurat</a>
+            </div>
         </div>
     `;
 
