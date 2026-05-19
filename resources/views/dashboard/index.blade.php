@@ -54,8 +54,26 @@
             <div class="card-header border-0 py-3">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <h5 class="mb-0 fw-bold"><i class="fas fa-door-closed me-2 text-white-50"></i>{{ $device->device_name }}</h5>
-                    <span class="badge rounded-pill device-status-badge {{ $device->monitorings->count() > 0 && $device->monitorings->first()->status === 'Aman' ? 'bg-success' : 'bg-danger' }} border border-light">
-                        <span class="device-status-text">{{ $device->monitorings->count() > 0 ? $device->monitorings->first()->status : 'No Data' }}</span>
+                    @php
+                        $status = 'No Data';
+                        $bgClass = 'bg-secondary';
+                        if ($device->monitorings->count() > 0) {
+                            $mon = $device->monitorings->first();
+                            $t = $mon->temperature;
+                            if ($t >= 31) {
+                                $status = 'Panas';
+                                $bgClass = 'bg-danger';
+                            } elseif ($t <= 29) {
+                                $status = 'Dingin';
+                                $bgClass = 'bg-info';
+                            } else {
+                                $status = 'Aman';
+                                $bgClass = 'bg-success';
+                            }
+                        }
+                    @endphp
+                    <span class="badge rounded-pill device-status-badge {{ $bgClass }} border border-light">
+                        <span class="device-status-text">{{ $status }}</span>
                     </span>
                 </div>
                 <small class="text-white-50"><i class="fas fa-map-marker-alt"></i> {{ $device->location }}</small>
@@ -824,10 +842,23 @@ function updateDeviceUI(device) {
     // ---- 4. Status badge ----
     const sBadge = card.querySelector('.device-status-badge');
     const sText  = card.querySelector('.device-status-text');
-    if (sBadge && sText && device.status) {
-        sText.textContent = device.status;
-        sBadge.classList.toggle('badge-aman',       device.status === 'Aman');
-        sBadge.classList.toggle('badge-tidak-aman', device.status !== 'Aman');
+    if (sBadge && sText) {
+        if (!isConnected) {
+            sText.textContent = 'Offline';
+            sBadge.className = 'badge rounded-pill device-status-badge bg-secondary border border-light';
+        } else {
+            const t = parseFloat(temp);
+            if (t >= 31) {
+                sText.textContent = 'Panas';
+                sBadge.className = 'badge rounded-pill device-status-badge bg-danger border border-light';
+            } else if (t <= 29) {
+                sText.textContent = 'Dingin';
+                sBadge.className = 'badge rounded-pill device-status-badge bg-info border border-light';
+            } else {
+                sText.textContent = 'Aman';
+                sBadge.className = 'badge rounded-pill device-status-badge bg-success border border-light';
+            }
+        }
     }
 
     // ---- 5. Kipas & Penghangat ----
