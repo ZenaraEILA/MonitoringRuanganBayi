@@ -24,13 +24,12 @@
             width: 210mm;
             margin: 0;
             padding: 0;
-            page-break-after: always;
             position: relative;
             clear: both;
         }
 
-        .page:last-child {
-            page-break-after: avoid;
+        .page-break {
+            page-break-before: always;
         }
 
         /* Page content wrapper */
@@ -482,7 +481,7 @@
     </div>
 
     <!-- ===== SLIDE 2: SUMMARY PAGE ===== -->
-    <div class="page summary-page">
+    <div class="page summary-page page-break">
         <div class="page-content">
             <div class="page-title">RINGKASAN PENTING</div>
 
@@ -576,7 +575,7 @@
 
     <!-- ===== SLIDE 3: GRAFIK PAGE ===== -->
     @if(!empty($chartImage) && file_exists($chartImage))
-    <div class="page chart-page">
+    <div class="page chart-page page-break">
         <div class="page-content">
             <div class="page-title">GRAFIK MONITORING</div>
 
@@ -592,7 +591,7 @@
 
     <!-- ===== SLIDE 4: DATA TABLE PAGE ===== -->
     @if($monitorings->count() > 0)
-    <div class="page table-page">
+    <div class="page table-page page-break">
         <div class="page-content">
             <div class="page-title">DATA DETAIL MONITORING ({{ $monitorings->count() }} Records)</div>
 
@@ -630,7 +629,7 @@
 
     <!-- ===== SLIDE 5: CATATAN TAMBAHAN PAGE ===== -->
     @if($incidents->count() > 0 || $doctorNotes->count() > 0)
-    <div class="page notes-page">
+    <div class="page notes-page page-break">
         <div class="page-content">
             <div class="page-title">CATATAN TAMBAHAN</div>
 
@@ -672,7 +671,7 @@
     @endif
 
     <!-- ===== SLIDE 6: PENUTUP PAGE ===== -->
-    <div class="page closing-page">
+    <div class="page closing-page page-break">
         <div class="page-content closing-content">
             <div class="closing-title">Laporan Selesai</div>
 
