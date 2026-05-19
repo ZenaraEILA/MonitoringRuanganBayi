@@ -59,8 +59,8 @@
                     <option value="semua" {{ ($status ?? '') == 'semua' ? 'selected' : '' }}>Semua Kondisi</option>
                     <option value="normal" {{ ($status ?? '') == 'normal' ? 'selected' : '' }}>Normal (Aman)</option>
                     <option value="bahaya" {{ ($status ?? '') == 'bahaya' ? 'selected' : '' }}>Bahaya (Tidak Aman)</option>
-                    <option value="panas" {{ ($status ?? '') == 'panas' ? 'selected' : '' }}>Kondisi Panas (Suhu &ge; 31&deg;C)</option>
-                    <option value="dingin" {{ ($status ?? '') == 'dingin' ? 'selected' : '' }}>Kondisi Dingin (Suhu &le; 29&deg;C)</option>
+                    <option value="panas" {{ ($status ?? '') == 'panas' ? 'selected' : '' }}>Kondisi Panas (Suhu &ge; 31.1&deg;C)</option>
+                    <option value="dingin" {{ ($status ?? '') == 'dingin' ? 'selected' : '' }}>Kondisi Dingin (Suhu &le; 28.9&deg;C)</option>
                 </select>
             </div>
 
@@ -294,12 +294,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             <small class="text-muted">{{ str_pad($summary->hour, 2, '0', STR_PAD_LEFT) }}:00 - {{ str_pad($summary->hour, 2, '0', STR_PAD_LEFT) }}:59</small>
                         </td>
                         <td>
-                            <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $summary->avg_temp < 28 || $summary->avg_temp > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
+                            <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $summary->avg_temp <= 28.9 || $summary->avg_temp >= 31.1 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $summary->avg_temp <= 28.9 || $summary->avg_temp >= 31.1 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $summary->avg_temp <= 28.9 || $summary->avg_temp >= 31.1 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
                                 {{ number_format($summary->avg_temp, 2) }} °C
                             </span>
-                            @if($summary->avg_temp >= 31)
+                            @if($summary->avg_temp >= 31.1)
                                 <span class="badge bg-danger ms-1">Panas</span>
-                            @elseif($summary->avg_temp <= 29)
+                            @elseif($summary->avg_temp <= 28.9)
                                 <span class="badge bg-primary ms-1">Dingin</span>
                             @endif
                         </td>
@@ -348,8 +348,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 @forelse($monitorings as $monitoring)
                 @php
                     $rowClass = '';
-                    $isPanas = $monitoring->temperature >= 31;
-                    $isDingin = $monitoring->temperature <= 29;
+                    $isPanas = $monitoring->temperature >= 31.1;
+                    $isDingin = $monitoring->temperature <= 28.9;
                     $isAman = $monitoring->status === 'Aman';
 
                     if (!$isAman && $isDingin) {
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 @endphp
                 <tr class="{{ $rowClass }}">
                     <td>
-                        <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $monitoring->temperature < 28 || $monitoring->temperature > 30 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
+                        <span class="badge px-2 py-1 rounded-2" style="background-color: {{ $monitoring->temperature <= 28.9 || $monitoring->temperature >= 31.1 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)' }}; color: {{ $monitoring->temperature <= 28.9 || $monitoring->temperature >= 31.1 ? '#ef4444' : '#10b981' }}; border: 1px solid {{ $monitoring->temperature <= 28.9 || $monitoring->temperature >= 31.1 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}">
                             {{ number_format($monitoring->temperature, 2) }}
                         </span>
                     </td>
@@ -382,11 +382,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         </span>
                         
                         <!-- Status Kondisi Spesifik -->
-                        @if($monitoring->temperature >= 31)
+                        @if($monitoring->temperature >= 31.1)
                             <span class="badge bg-danger ms-1">
                                 <i class="fas fa-fire-alt me-1"></i>Panas
                             </span>
-                        @elseif($monitoring->temperature <= 29)
+                        @elseif($monitoring->temperature <= 28.9)
                             <span class="badge bg-primary ms-1">
                                 <i class="fas fa-snowflake me-1"></i>Dingin
                             </span>

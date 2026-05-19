@@ -60,10 +60,10 @@
                         if ($device->monitorings->count() > 0) {
                             $mon = $device->monitorings->first();
                             $t = $mon->temperature;
-                            if ($t > 31) {
+                            if ($t >= 31.1) {
                                 $status = 'Panas';
                                 $bgClass = 'bg-danger';
-                            } elseif ($t < 29) {
+                            } elseif ($t <= 28.9) {
                                 $status = 'Dingin';
                                 $bgClass = 'bg-info';
                             } else {
@@ -848,10 +848,10 @@ function updateDeviceUI(device) {
             sBadge.className = 'badge rounded-pill device-status-badge bg-secondary border border-light';
         } else {
             const t = parseFloat(temp);
-            if (t > 31) {
+            if (t >= 31.1) {
                 sText.textContent = 'Panas';
                 sBadge.className = 'badge rounded-pill device-status-badge bg-danger border border-light';
-            } else if (t < 29) {
+            } else if (t <= 28.9) {
                 sText.textContent = 'Dingin';
                 sBadge.className = 'badge rounded-pill device-status-badge bg-info border border-light';
             } else {
@@ -865,9 +865,9 @@ function updateDeviceUI(device) {
     if (temp !== null) {
         const t   = parseFloat(temp);
         const on  = isConnected;
-        const f1  = on && (t >= 29); // On if >= 29
-        const f2  = on && (t > 31);  // On if > 31
-        const htr = on && (t < 29);  // On if < 29
+        const f1  = on && (t > 28.9);  // On if > 28.9
+        const f2  = on && (t >= 31.1); // On if >= 31.1
+        const htr = on && (t <= 28.9); // On if <= 28.9
 
         setHardwareStatus(device.id, 'fan1',   f1,  'bg-primary', 'NYALA', 'MATI');
         setHardwareStatus(device.id, 'fan2',   f2,  'bg-primary', 'NYALA', 'MATI');
