@@ -169,7 +169,19 @@
     <table class="header-table">
         <tr>
             <td class="logo-cell">
-                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo-report.png'))) }}" class="logo">
+                @php
+                    $logoPath = public_path('images/logo-report.png');
+                    $logoBase64 = '';
+                    if (file_exists($logoPath)) {
+                        $logoData = file_get_contents($logoPath);
+                        $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+                    }
+                @endphp
+                @if($logoBase64)
+                    <img src="{{ $logoBase64 }}" class="logo">
+                @else
+                    <div style="width: 80px; height: 80px; background: #0d6efd; border-radius: 50%; display: inline-block;"></div>
+                @endif
             </td>
             <td class="title-cell">
                 <h1 class="hospital-name">SISTEM MONITORING RUANGAN BAYI</h1>
