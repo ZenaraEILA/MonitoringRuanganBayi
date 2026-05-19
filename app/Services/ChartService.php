@@ -12,6 +12,11 @@ class ChartService
      */
     public static function generateMonitoringChart(Collection $monitorings): string
     {
+        if (!extension_loaded('gd')) {
+            \Log::warning('PHP GD extension is not installed or enabled. Skipping chart generation.');
+            return '';
+        }
+
         if ($monitorings->isEmpty()) {
             return '';
         }
@@ -282,6 +287,10 @@ class ChartService
      */
     public static function generateStatusChart(Collection $monitorings): string
     {
+        if (!extension_loaded('gd')) {
+            return '';
+        }
+
         if ($monitorings->isEmpty()) {
             return '';
         }
