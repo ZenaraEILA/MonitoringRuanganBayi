@@ -39,6 +39,15 @@ class ReportController extends Controller
             ->orderBy('recorded_at')
             ->get();
 
+        // Downsample data if too many records to prevent DOMPDF memory exhaust (Max 200 records)
+        if ($monitorings->count() > 200) {
+            $step = (int)ceil($monitorings->count() / 200);
+            $counter = 0;
+            $monitorings = $monitorings->filter(function() use ($step, &$counter) {
+                return ($counter++ % $step) == 0;
+            })->values();
+        }
+
         $filename = 'Laporan-Harian-' . $device->device_name . '-' . $date->format('Y-m-d');
 
         if ($validated['format'] === 'pdf') {
@@ -67,6 +76,15 @@ class ReportController extends Controller
             ->whereBetween('recorded_at', [$startDate->startOfDay(), $endDate->endOfDay()])
             ->orderBy('recorded_at')
             ->get();
+
+        // Downsample data if too many records to prevent DOMPDF memory exhaust (Max 200 records)
+        if ($monitorings->count() > 200) {
+            $step = (int)ceil($monitorings->count() / 200);
+            $counter = 0;
+            $monitorings = $monitorings->filter(function() use ($step, &$counter) {
+                return ($counter++ % $step) == 0;
+            })->values();
+        }
 
         $filename = 'Laporan-Mingguan-' . $device->device_name . '-' . $startDate->format('Y-m-d');
 
