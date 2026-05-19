@@ -78,7 +78,7 @@ class MonitoringController extends Controller
             ->orderBy('hour', 'desc')
             ->get();
 
-        $monitorings = $query->latest('recorded_at')->paginate(50);
+        $monitorings = $query->latest('recorded_at')->paginate(10);
 
         return view('monitoring.history', compact('monitorings', 'hourlySummaries', 'devices', 'selectedDevice', 'startDate', 'endDate', 'startTime', 'endTime', 'status', 'searchSuhu', 'searchKelembapan'));
     }
