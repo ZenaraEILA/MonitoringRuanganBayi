@@ -122,7 +122,7 @@
                             </span><span class="fs-5" style="color:{{ ($temperature <= 29 || $temperature >= 31) && $monitoring ? '#dc3545' : ($monitoring ? '#198754' : '#6c757d') }};">°C</span>
                         </div>
                         <div class="mt-1">
-                            <span class="badge bg-light text-secondary border"><i class="fas fa-info-circle"></i> 29.1 - 30.9 °C</span>
+                            <span class="badge bg-light text-secondary border"><i class="fas fa-info-circle"></i> 29.0 - 31.0 °C</span>
                         </div>
                     </div>
                     <div class="col-6">
