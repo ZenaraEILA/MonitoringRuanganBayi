@@ -54,11 +54,7 @@ class PdfExportService
 
         // Generate PDF
         $pdf = Pdf::loadView('reports.pdf-export', $data)
-            ->setPaper('a4')
-            ->setOption('margin-bottom', 0)
-            ->setOption('margin-top', 0)
-            ->setOption('margin-left', 0)
-            ->setOption('margin-right', 0);
+            ->setPaper('a4');
 
         return $pdf->download($filename . '.pdf');
     }
