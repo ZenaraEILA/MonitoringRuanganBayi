@@ -26,7 +26,7 @@ class ReportController extends Controller
     public function exportDaily(Request $request)
     {
         $validated = $request->validate([
-            'device_id' => 'required|exists:devices,id',
+            'device_id' => 'required|exists:devices,id',        
             'date' => 'required|date',
             'format' => 'required|in:pdf,excel',
         ]);
@@ -106,7 +106,7 @@ class ReportController extends Controller
             ->map(function($item) {
                 $item->recorded_at = Carbon::parse($item->recorded_at);
                 // Tentukan status berdasarkan rata-rata
-                $item->status = ($item->temperature < 28 || $item->temperature > 30) ? 'Tidak Aman' : 'Aman';
+                $item->status = ($item->temperature <= 28.9 || $item->temperature >= 31.1) ? 'Tidak Aman' : 'Aman';
                 return $item;
             });
 

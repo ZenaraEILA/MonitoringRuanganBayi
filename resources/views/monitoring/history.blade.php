@@ -267,6 +267,41 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('chartInterval').addEventListener('change', function () {
         renderChart(parseInt(this.value));
     });
+
+    // Auto refresh table bodies every 10 seconds
+    setInterval(async () => {
+        try {
+            const response = await fetch(window.location.href);
+            if (response.ok) {
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Update detail table
+                const newDetail = doc.getElementById('detailTableBody');
+                const currentDetail = document.getElementById('detailTableBody');
+                if (newDetail && currentDetail) {
+                    currentDetail.innerHTML = newDetail.innerHTML;
+                }
+                
+                // Update summary table
+                const newSummary = doc.getElementById('summaryTableBody');
+                const currentSummary = document.getElementById('summaryTableBody');
+                if (newSummary && currentSummary) {
+                    currentSummary.innerHTML = newSummary.innerHTML;
+                }
+                
+                // Update total count
+                const newTotal = doc.querySelector('.card-footer small');
+                const currentTotal = document.querySelector('.card-footer small');
+                if (newTotal && currentTotal) {
+                    currentTotal.innerHTML = newTotal.innerHTML;
+                }
+            }
+        } catch (e) {
+            console.warn('Auto refresh error:', e);
+        }
+    }, 10000);
 });
 </script>
 
@@ -286,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <th>Rata-rata Kelembapan</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="summaryTableBody">
                     @forelse($hourlySummaries as $summary)
                     <tr>
                         <td>
@@ -344,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="detailTableBody">
                 @forelse($monitorings as $monitoring)
                 @php
                     $rowClass = '';

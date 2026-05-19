@@ -52,9 +52,9 @@ class MonitoringController extends Controller
             } elseif ($status === 'bahaya') {
                 $query->where('status', 'Tidak Aman');
             } elseif ($status === 'panas') {
-                $query->where('temperature', '>=', 31);
+                $query->where('temperature', '>=', 31.1);
             } elseif ($status === 'dingin') {
-                $query->where('temperature', '<=', 29);
+                $query->where('temperature', '<=', 28.9);
             }
         }
 
