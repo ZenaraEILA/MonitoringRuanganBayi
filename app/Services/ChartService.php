@@ -269,17 +269,24 @@ class ChartService
         imagefilledrectangle($image, $legendX + 5, $legendY + 35, $legendX + 17, $legendY + 47, $blueColor);
         imagestring($image, 2, $legendX + 22, $legendY + 35, 'Kelembapan (%)', $blueColor);
 
-        // Save image
-        $path = storage_path('app/public/charts/');
-        if (!is_dir($path)) {
-            mkdir($path, 0755, true);
+        // Save image safely with try-catch to prevent permission 500 errors
+        try {
+            $path = storage_path('app/public/charts/');
+            if (!is_dir($path)) {
+                @mkdir($path, 0755, true);
+            }
+
+            $filename = 'chart_' . time() . '_' . random_int(1000, 9999) . '.png';
+            if (@imagepng($image, $path . $filename)) {
+                imagedestroy($image);
+                return $path . $filename;
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Gagal menyimpan grafik pemantauan karena isu permission: ' . $e->getMessage());
         }
 
-        $filename = 'chart_' . time() . '_' . random_int(1000, 9999) . '.png';
-        imagepng($image, $path . $filename);
         imagedestroy($image);
-
-        return $path . $filename;
+        return '';
     }
 
     /**
@@ -340,15 +347,23 @@ class ChartService
         imagestring($image, 2, $centerX - 50, $centerY + 120, 'Aman: ' . $safe . ' (' . round($safePercent, 1) . '%)', $green);
         imagestring($image, 2, $centerX - 50, $centerY + 135, 'Tidak Aman: ' . $unsafe . ' (' . round($unsafePercent, 1) . '%)', $red);
 
-        $path = storage_path('app/public/charts/');
-        if (!is_dir($path)) {
-            mkdir($path, 0755, true);
+        // Save status chart safely with try-catch to prevent permission 500 errors
+        try {
+            $path = storage_path('app/public/charts/');
+            if (!is_dir($path)) {
+                @mkdir($path, 0755, true);
+            }
+
+            $filename = 'status_' . time() . '_' . random_int(1000, 9999) . '.png';
+            if (@imagepng($image, $path . $filename)) {
+                imagedestroy($image);
+                return $path . $filename;
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Gagal menyimpan grafik status karena isu permission: ' . $e->getMessage());
         }
 
-        $filename = 'status_' . time() . '_' . random_int(1000, 9999) . '.png';
-        imagepng($image, $path . $filename);
         imagedestroy($image);
-
-        return $path . $filename;
+        return '';
     }
 }
