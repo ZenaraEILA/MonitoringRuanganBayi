@@ -169,7 +169,7 @@
     <table class="header-table">
         <tr>
             <td class="logo-cell">
-                <img src="{{ public_path('images/logo-report.png') }}" class="logo">
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo-report.png'))) }}" class="logo">
             </td>
             <td class="title-cell">
                 <h1 class="hospital-name">SISTEM MONITORING RUANGAN BAYI</h1>
