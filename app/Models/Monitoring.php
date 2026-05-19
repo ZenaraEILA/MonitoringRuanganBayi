@@ -53,10 +53,10 @@ class Monitoring extends Model
     {
         $recommendations = [];
         
-        if ($this->temperature >= 31) {
-            $recommendations[] = "🌡️ Suhu terlalu tinggi (>=31°C) - Turunkan AC";
-        } elseif ($this->temperature <= 29) {
-            $recommendations[] = "❄️ Suhu terlalu rendah (<=29°C) - Naikkan suhu AC / tutup ventilasi";
+        if ($this->temperature > 31) {
+            $recommendations[] = "🌡️ Suhu terlalu tinggi (>31°C) - Nyalakan Kipas 2";
+        } elseif ($this->temperature < 29) {
+            $recommendations[] = "❄️ Suhu terlalu rendah (<29°C) - Nyalakan Pemanas";
         }
 
         return !empty($recommendations) ? implode(' | ', $recommendations) : "✅ Kondisi normal, tidak perlu tindakan";
@@ -77,10 +77,10 @@ class Monitoring extends Model
     {
         $recommendations = [];
         
-        if ($this->temperature >= 31) {
-            $recommendations[] = "Turunkan suhu AC";
-        } elseif ($this->temperature <= 29) {
-            $recommendations[] = "Naikkan suhu AC / tutup ventilasi";
+        if ($this->temperature > 31) {
+            $recommendations[] = "Nyalakan Kipas 2";
+        } elseif ($this->temperature < 29) {
+            $recommendations[] = "Nyalakan Pemanas";
         }
 
         return $recommendations;

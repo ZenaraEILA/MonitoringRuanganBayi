@@ -36,7 +36,7 @@ class MonitoringController extends Controller
 
         // Determine status based on temperature (align with Arduino)
         $status = 'Aman';
-        if ($request->temperature <= 29 || $request->temperature >= 31) {
+        if ($request->temperature < 29 || $request->temperature > 31) {
             $status = 'Tidak Aman';
         }
 
